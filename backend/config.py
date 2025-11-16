@@ -8,7 +8,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Define the database 
 #SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/balans"
 
-SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/balans"
+SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/mystl"
 
 DATABASE_CONNECT_OPTIONS = {}
 
