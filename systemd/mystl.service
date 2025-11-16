@@ -1,0 +1,16 @@
+[Unit]
+Description=MySTL web application
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=www-data
+
+WorkingDirectory=/opt/mystl/
+ExecStart=/usr/bin/python3 /opt/mystl/run.py
+
+[Install]
+WantedBy=multi-user.target
