@@ -30,5 +30,5 @@ server {
 		proxy_pass http://localhost:5000;
 	}
 
-    rewrite ^/(.*)$ / permanent;
+    rewrite ^/mystl(.*)$ / permanent;
 }
