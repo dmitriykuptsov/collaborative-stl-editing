@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS PointAnnotations (
     position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object) REFERENCES Objects(name) ON DELETE CASCADE,
+    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS DistanceAnnnotations (
     end_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object) REFERENCES Objects(name) ON DELETE CASCADE,
+    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -112,6 +112,6 @@ CREATE TABLE IF NOT EXISTS AngleAnnnotations (
     center_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object) REFERENCES Objects(name) ON DELETE CASCADE,
+    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
