@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded">
+  <div v-if="loaded" style="width: 100%;">
     <div v-if="isAuthenticated">
       <header>
         <div class="title">
@@ -8,7 +8,7 @@
       </header>
       <router-view></router-view>
     </div>
-    <div v-if="!isAuthenticated">
+    <div v-if="!isAuthenticated" style="width: 100%;">
       <AuthLogin />
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
       const url = this.$BASE_URL + "/auth/validate_token/";
       axios.post(url, {}, { headers }).then((response) => {
         this.loaded = true;
-        if (response.data[0].valid) {
+        if (response.data.valid) {
           this.isAuthenticated = true;
         } else {
           this.isAuthenticated = false;
@@ -49,7 +49,7 @@ export default {
       const url = this.$BASE_URL + "/auth/logout/";
       axios.post(url, {}, { headers }).then((response) => {
         this.loaded = true;
-        if (response.data[0].valid) {
+        if (response.data.valid) {
           this.isAuthenticated = true;
         } else {
           this.isAuthenticated = false;

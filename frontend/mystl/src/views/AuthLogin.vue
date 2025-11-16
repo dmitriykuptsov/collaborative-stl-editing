@@ -2,23 +2,17 @@
   <div class="login-main">
     <div class="login-text">
       <h3>
-        Share, edit and order your 3D model
+        Share, edit and order your 3D object for printing
       </h3>
     </div>
     <div class="login-div">
-      <OkModal
-        v-bind:header="dsOffer"
-        v-bind:message="dsNotImplMsg"
-        v-if="showDsModal"
-        v-on:confirm="closeDsModal"
-      />
       <form class="login-form">
         <div class="form-group">
-          <label>Учетная запись</label>
+          <label>Username</label>
           <div class="input-group input-group-lg">
             <div class="input-group-addon">
               <span class="input-group-text">
-                <BootstrapIcon icon="person" size="2x" />
+                <i class="bi bi-person fs-3"></i>
               </span>
             </div>
             <input
@@ -29,11 +23,11 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Пароль</label>
+          <label>Password</label>
           <div class="input-group input-group-lg">
             <div class="input-group-append">
               <span class="input-group-text">
-                <BootstrapIcon icon="lock" size="2x" />
+                <i class="bi bi-lock fs-3"></i>
               </span>
             </div>
             <input
@@ -45,33 +39,23 @@
         </div>
         <div class="form-group" style="margin-top: 10px">
           <button @click="login" class="btn btn-dark btn-lg btn-block btn-add">
-            <BootstrapIcon icon="arrow-right-square" size="1x" />
-            Войти
-          </button>
-          <button
-            @click="dslogin"
-            class="btn btn-dark btn-lg btn-block btn-report2"
-            style="float: right"
-          >
-            <BootstrapIcon icon="key" size="1x" />
-            Войти с цифровым ключом
+            <i class="bi bi-door-open fs-3"></i>
+            Login
           </button>
         </div>
         <div class="form-group" v-if="failed" style="margin-top: 10px">
           <div class="alert alert-danger" role="alert">
-            Неверный логин или пароль
+            Invalid username or password
           </div>
         </div>
       </form>
-      Мы поддерживаем RSA ключи Tokey®JCOP3 от CrypToken
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import OkModal from "../components/OkModal.vue";
-import BootstrapIcon from "@dvuckovic/vue3-bootstrap-icons";
+
 
 export default {
   name: "AuthLogin",
@@ -79,10 +63,7 @@ export default {
     return {
       username: "",
       password: "",
-      failed: false,
-      dsOffer: "Использование лицензионного ключа для входа",
-      dsNotImplMsg: "Обратитесь к производителю ПО для консультации",
-      showDsModal: false,
+      failed: false
     };
   },
   methods: {
@@ -94,26 +75,17 @@ export default {
       axios
         .post(this.$BASE_URL + "/auth/signin/", data, { headers })
         .then((response) => {
-          if (response.data[0].success) {
+          if (response.data.success) {
             sessionStorage.setItem("token", response.data[0].token);
             this.$parent.isAuthenticated = true;
             this.$router.push("/5gr/");
           }
-          this.failed = !response.data[0].success;
+          this.failed = !response.data.success;
         });
       e.preventDefault();
-    },
-    dslogin(e) {
-      this.showDsModal = true;
-      e.preventDefault();
-    },
-    closeDsModal() {
-      this.showDsModal = false;
-    },
+    }
   },
   components: {
-    OkModal,
-    BootstrapIcon,
   },
 };
 </script>
@@ -149,7 +121,12 @@ h3 {
 }
 
 .login-text {
-  margin: 10% auto;
-  width: 900px;
+  margin-left: auto;
+  margin-top: 200px;
+  width: 100%;
+}
+
+.login-main {
+  width: 100%;
 }
 </style>
