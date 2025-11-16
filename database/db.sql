@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS ResetPasswordTokens (
 CREATE TABLE IF NOT EXISTS Objects (
     name VARCHAR(400) NOT NULL,
     owner VARCHAR(100) NOT NULL,
-    PRIMARY KEY (name),
+    PRIMARY KEY (name, owner),
     FOREIGN KEY (owner) REFERENCES Users(username)
     ON DELETE CASCADE
 );
@@ -35,9 +35,10 @@ CREATE TABLE IF NOT EXISTS Objects (
 CREATE TABLE IF NOT EXISTS ObjectVersions (
     name VARCHAR(400) NOT NULL,
     version INT NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     hash VARCHAR(200) NOT NULL,
-    PRIMARY KEY(name, version),
-    FOREIGN KEY (name) REFERENCES Objects(name)
+    PRIMARY KEY(name, version, owner),
+    FOREIGN KEY (name, owner) REFERENCES Objects(name, owner)
     ON DELETE CASCADE
 );
 
@@ -49,19 +50,21 @@ CREATE TABLE IF NOT EXISTS Permissions (
 CREATE TABLE IF NOT EXISTS Shares (
     object VARCHAR(400) NOT NULL,
     username VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     permission VARCHAR(10),
-    PRIMARY KEY(object, username),
+    PRIMARY KEY(object, username, owner),
     FOREIGN KEY (permission) REFERENCES Permissions(permission) ON DELETE CASCADE,
-    FOREIGN KEY (object) REFERENCES Objects(name) ON DELETE CASCADE,
+    FOREIGN KEY (object, owner) REFERENCES Objects(name, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Comments (
     object VARCHAR(400) NOT NULL,
     username VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     comment TEXT,
-    PRIMARY KEY (object, username),
-    FOREIGN KEY (object) REFERENCES Objects(name) ON DELETE CASCADE,
+    PRIMARY KEY (object, username, owner),
+    FOREIGN KEY (object, owner) REFERENCES Objects(name, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -69,13 +72,14 @@ CREATE TABLE IF NOT EXISTS PointAnnotations (
     object VARCHAR(400) NOT NULL,
     username VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     version INT NOT NULL,
     position_x FLOAT NOT NULL,
     position_y FLOAT NOT NULL,
     position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
+    PRIMARY KEY (object, username, name, version, owner),
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -83,6 +87,7 @@ CREATE TABLE IF NOT EXISTS DistanceAnnnotations (
     object VARCHAR(400) NOT NULL,
     username VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     version INT NOT NULL,
     start_position_x FLOAT NOT NULL,
     start_position_y FLOAT NOT NULL,
@@ -91,8 +96,8 @@ CREATE TABLE IF NOT EXISTS DistanceAnnnotations (
     end_position_y FLOAT NOT NULL,
     end_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
+    PRIMARY KEY (object, username, name, version, owner),
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -100,6 +105,7 @@ CREATE TABLE IF NOT EXISTS AngleAnnnotations (
     object VARCHAR(400) NOT NULL,
     username VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     version INT NOT NULL,
     start_position_x FLOAT NOT NULL,
     start_position_y FLOAT NOT NULL,
@@ -111,7 +117,7 @@ CREATE TABLE IF NOT EXISTS AngleAnnnotations (
     center_position_y FLOAT NOT NULL,
     center_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (object, username, name, version),
-    FOREIGN KEY (object, version) REFERENCES ObjectVersions(name, version) ON DELETE CASCADE,
+    PRIMARY KEY (object, username, name, version, owner),
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
