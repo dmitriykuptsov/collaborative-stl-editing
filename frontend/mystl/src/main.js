@@ -7,6 +7,7 @@ import router from "./router";
 
 
 const app = createApp(App);
-app.config.globalProperties["$BASE_URL"] = "http://localhost:5006";
+//app.config.globalProperties["$BASE_URL"] = "http://localhost:5006";
+app.config.globalProperties["$BASE_URL"] = "http://mystl.strangebit.io";
 app.use(router);
 app.mount("#app");

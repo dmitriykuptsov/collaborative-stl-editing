@@ -4,6 +4,7 @@
       <h3>
         Share, edit and order your 3D object for printing
       </h3>
+      <img src="@/assets/logo.png" class="logo"/>
     </div>
     <div class="login-div">
       <form class="login-form">
@@ -107,6 +108,11 @@ h3 {
   left: 50%;
   margin-top: -150px;
   margin-left: -225px;
+}
+
+.logo {
+  margin-top: -200px;
+  margin-left: 70%;
 }
 
 .login-form {
