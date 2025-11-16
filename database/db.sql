@@ -42,6 +42,27 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS Providers (
+    provider VARCHAR(400) NOT NULL PRIMARY KEY,
+    cost_per_cubic_cm FLOAT
+);
+
+CREATE TABLE IF NOT EXISTS OrderStatus (
+    name VARCHAR(400) NOT NULL,
+    status INT NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS Orders (
+    name VARCHAR(400) NOT NULL,
+    version INT NOT NULL,
+    owner VARCHAR(100) NOT NULL,
+    status INT NOT NULL DEFAULT 0,
+    cost FLOAT,
+    order_date DATETIME NOT NULL,
+    PRIMARY KEY(name, version, owner),
+    FOREIGN KEY (name, version, owner) REFERENCES ObjectVersions(name, version, owner)
+);
+
 CREATE TABLE IF NOT EXISTS Permissions (
     permission VARCHAR(10) NOT NULL PRIMARY KEY,
     description VARCHAR(100) NOT NULL
