@@ -17,7 +17,7 @@ class Cities(db.Model):
     country_code   = db.Column(db.String(3), nullable=False, primary_key = True)
 
     def __repr__(self):
-        return '<Country %r>' % (self.country)
+        return '<Cities %r>' % (self.city)
 
 class Users(db.Model):
 
@@ -37,3 +37,10 @@ class Users(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
+class ConfirmationTokens(db.Model):
+    __tablename__  = "ConfirmationTokens"
+
+    username       = db.Column(db.String(100), nullable=False, primary_key=True)
+    token          = db.Column(db.String(100), nullable=False)
+    exp            = db.Column(db.Integer, default=0)

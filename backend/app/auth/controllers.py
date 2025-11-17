@@ -8,6 +8,8 @@ from app import config_
 from models.models import Users
 from models.models import Cities
 from models.models import Countries
+from models.models import ConfirmationTokens
+from datetime import datetime
 import secrets
 import re
 from utils.utils import check_password, encode_jwt, is_valid_auth_token, get_auth_token, decode_jwt, hash_password
@@ -78,11 +80,42 @@ def register():
     user.country_code = country_code
     user.confirmed = False
     db.session.add(user)
+
+    confirmation = ConfirmationTokens()
+    confirmation.token = hexlify(os.urandom(128))
+    confirmation.username = username
+    db.session.add(confirmation)
+
     db.session.commit()
     return jsonify({
             "success": True,
             "reason": "Verification email was sent to your address"
         })
+
+@mod_auth.route("/confirm_email/", methods=["GET"])
+def confirm_email():
+    username = request.args.get("username", None)
+    token = request.args.get("token", None)
+    confirmation = ConfirmationTokens.query.filter_by(username=username, token=token).first()
+    if not confirmation:
+        return jsonify({
+            "success": False,
+            "reason": "Invalid confirmation token"
+        })
+    
+    user = Users.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({
+            "success": False,
+            "reason": "User does not exist"
+        }) 
+    user.confirmed = True
+    db.session.commit()
+    return jsonify({
+            "success": True,
+            "reason": "Email was confirmed"
+        })
+
 @mod_auth.route("/signin/", methods=["POST"])
 def signin():
     if request.method == "POST":
