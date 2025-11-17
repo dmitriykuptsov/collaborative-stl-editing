@@ -37,6 +37,16 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
     hash VARCHAR(200) NOT NULL,
+    volume FLOAT DEFAULT 0.0,
+    cog_x FLOAT DEFAULT 0.0,
+    cog_y FLOAT DEFAULT 0.0,
+    cog_z FLOAT DEFAULT 0.0,
+    is_water_tight BOOLEAN DEFAULT TRUE,
+    number_of_facets INT DEFAULT 0,
+    number_of_unique_verticies INT DEFAULT 0,
+    has_zero_area_triangles BOOLEAN DEFAULT FALSE,
+    is_edge_manifold BOOLEAN DEFAULT FALSE,
+    is_vertex_manifold BOOLEAN DEFAULT FALSE,
     PRIMARY KEY(name, version, owner),
     FOREIGN KEY (name, owner) REFERENCES Objects(name, owner)
     ON DELETE CASCADE
