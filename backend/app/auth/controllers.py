@@ -131,7 +131,7 @@ def signin():
         resp = make_response(jsonify({
             "success": True
         }))
-        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax')
+        resp.set_cookie('token', token, max_age=365*24*60*60, httponly=True, secure=False, samesite='Lax')
     else:
         return jsonify({
             "success": False
@@ -163,11 +163,12 @@ def renew_token():
         })
     
     if is_valid_auth_token(token, config_["SERVER_NONCE"], config_["TOKEN_KEY"]):
-        token = encode_jwt(payload["subject"], salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
-        resp = make_response(jsonify({
-            "success": True
-        }))
-        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax')
+        if payload["exp"] < datetime.now() - 10*60:
+            token = encode_jwt(payload["subject"], salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
+            resp = make_response(jsonify({
+                "success": True
+            }))
+            resp.set_cookie('token', token, max_age=365*24*60*60, httponly=True, secure=False, samesite='Lax')
     return jsonify({
         "success": False
     })
