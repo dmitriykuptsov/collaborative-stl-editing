@@ -2,12 +2,35 @@ CREATE DATABASE IF NOT EXISTS mystl;
 
 USE mystl;
 
+CREATE TABLE IF NOT EXISTS Countries (
+    country_code VARCHAR(3),
+    country VARCHAR(200),
+    PRIMARY KEY (country_code)
+);
+
+CREATE TABLE IF NOT EXISTS Cities (
+    city_code VARCHAR(10),
+    city VARCHAR(200),
+    country_code VARCHAR(3),
+    PRIMARY KEY (country_code, city_code),
+    FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(100) NOT NULL PRIMARY KEY,
     email VARCHAR(200) NOT NULL,
+    phone VARCHAR(100),
+    first_name VARCHAR(200),
+    last_name VARCHAR(200),
+    street_address VARCHAR(200),
+    postal_code VARCHAR(100),
+    city_code VARCHAR(10),
+    country_code VARCHAR(3),
     password VARCHAR(200) NOT NULL DEFAULT '',
     salt VARCHAR(100) NOT NULL,
-    confirmed BOOLEAN DEFAULT FALSE
+    confirmed BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (country_code, city_code) REFERENCES Cities(country_code, city_code) ON DELETE CASCADE,
+    FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ConfirmationTokens (
@@ -67,6 +90,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
     status INT NOT NULL DEFAULT 0,
+    paid BOOLEAN DEFAULT FALSE,
     cost FLOAT,
     order_date DATETIME NOT NULL,
     PRIMARY KEY(name, version, owner),
@@ -94,6 +118,7 @@ CREATE TABLE IF NOT EXISTS Comments (
     username VARCHAR(100) NOT NULL,
     owner VARCHAR(100) NOT NULL,
     comment TEXT,
+    date_of_comment DATETIME,
     PRIMARY KEY (object, username, owner),
     FOREIGN KEY (object, owner) REFERENCES Objects(name, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
