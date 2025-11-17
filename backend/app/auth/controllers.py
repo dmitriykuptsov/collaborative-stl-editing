@@ -118,25 +118,24 @@ def confirm_email():
 
 @mod_auth.route("/signin/", methods=["POST"])
 def signin():
-    if request.method == "POST":
-        data = request.get_json(force=True)
-        if not data:
-            return jsonify({
-                "success": False
-            })
-        salt = hexlify(os.urandom(32))
-        user = Users.query.filter_by(username=data.get("username", None)).first()
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
+    salt = hexlify(os.urandom(32))
+    user = Users.query.filter_by(username=data.get("username", None)).first()
         
-        if user and user.confirmed and check_password(data.get("password", "").encode("UTF-8"), user.salt.encode("UTF-8"), user.password.encode("UTF-8")):
-            token = encode_jwt(user.username, user.password, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
-            resp = make_response(jsonify({
-                "success": True
-            }))
-            resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax')
-        else:
-            return jsonify({
-                "success": False
-            })
+    if user and user.confirmed and check_password(data.get("password", "").encode("UTF-8"), user.salt.encode("UTF-8"), user.password.encode("UTF-8")):
+        token = encode_jwt(user.username, user.password, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
+        resp = make_response(jsonify({
+            "success": True
+        }))
+        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax')
+    else:
+        return jsonify({
+            "success": False
+        })
 
 @mod_auth.route("/logout/", methods=["GET"])
 def logout():
