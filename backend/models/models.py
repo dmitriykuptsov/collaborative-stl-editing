@@ -44,3 +44,11 @@ class ConfirmationTokens(db.Model):
     username       = db.Column(db.String(100), nullable=False, primary_key=True)
     token          = db.Column(db.String(100), nullable=False)
     exp            = db.Column(db.Integer, default=0)
+
+class Objects(db.Model):
+    __tablename__  = "Objects"
+    
+    name           = db.Column(db.String(400), nullable=False, primary_key=True)
+    owner          = db.Column(db.String(100), nullable=False, primary_key=True)
+    description    = db.Column(db.String(2000), nullable=True)
+    creation_time  = db.Column(db.Date, nullable=False)

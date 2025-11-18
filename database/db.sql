@@ -1,3 +1,5 @@
+DROP DATABASE mystl;
+
 CREATE DATABASE IF NOT EXISTS mystl;
 
 USE mystl;
@@ -50,6 +52,8 @@ CREATE TABLE IF NOT EXISTS ResetPasswordTokens (
 CREATE TABLE IF NOT EXISTS Objects (
     name VARCHAR(400) NOT NULL,
     owner VARCHAR(100) NOT NULL,
+    description VARCHAR(2000) NOT NULL,
+    creation_time DATETIME NOT NULL,
     PRIMARY KEY (name, owner),
     FOREIGN KEY (owner) REFERENCES Users(username)
     ON DELETE CASCADE
@@ -60,6 +64,8 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
     hash VARCHAR(200) NOT NULL,
+    model_file MEDIUMBLOB NOT NULL,
+    date_uploaded DATETIME NOT NULL,
     volume FLOAT DEFAULT 0.0,
     cog_x FLOAT DEFAULT 0.0,
     cog_y FLOAT DEFAULT 0.0,
