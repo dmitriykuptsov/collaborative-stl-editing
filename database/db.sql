@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Users (
 );
 
 CREATE TABLE IF NOT EXISTS ConfirmationTokens (
-    username VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL PRIMARY KEY,
     token VARCHAR(100) NOT NULL,
     exp INT DEFAULT 0,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
