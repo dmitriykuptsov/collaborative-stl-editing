@@ -31,8 +31,17 @@ CREATE TABLE IF NOT EXISTS Users (
     password VARCHAR(200) NOT NULL DEFAULT '',
     salt VARCHAR(100) NOT NULL,
     confirmed BOOLEAN DEFAULT FALSE,
+    enable_two_factor_auth DEFAULT FALSE,
     FOREIGN KEY (country_code, city_code) REFERENCES Cities(country_code, city_code) ON DELETE CASCADE,
     FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS TwoFactorAuthentication (
+    username VARCHAR(200) NOT NULL,
+    code VARCHAR(6) NOT NULL,
+    exp INT DEFAULT 0,
+    PRIMARY KEY (username, code),
+    FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ConfirmationTokens (
@@ -52,7 +61,7 @@ CREATE TABLE IF NOT EXISTS ResetPasswordTokens (
 CREATE TABLE IF NOT EXISTS Objects (
     name VARCHAR(400) NOT NULL,
     owner VARCHAR(100) NOT NULL,
-    description VARCHAR(2000) NOT NULL,
+    description VARCHAR(4000) NOT NULL,
     creation_time DATETIME NOT NULL,
     PRIMARY KEY (name, owner),
     FOREIGN KEY (owner) REFERENCES Users(username)
@@ -64,8 +73,8 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
     hash VARCHAR(200) NOT NULL,
-    model_file MEDIUMBLOB NOT NULL,
     date_uploaded DATETIME NOT NULL,
+    surface_area FLOAT DEFAULT 0.0,
     volume FLOAT DEFAULT 0.0,
     cog_x FLOAT DEFAULT 0.0,
     cog_y FLOAT DEFAULT 0.0,
@@ -83,7 +92,8 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
 
 CREATE TABLE IF NOT EXISTS Providers (
     provider VARCHAR(400) NOT NULL PRIMARY KEY,
-    cost_per_cubic_cm FLOAT
+    cost_per_cubic_cm FLOAT,
+    is_local BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS OrderStatus (
