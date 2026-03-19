@@ -90,11 +90,44 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS Colors (
+    color VARCHAR(400) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS Materials (
+    material VARCHAR(400) NOT NULL,
+    type_code INT,
+    color VARCHAR(400) NOT NULL,
+    price_per_cubic_cm FLOAT,
+    PRIMARY KEY(material, color),
+    FOREIGN KEY (color) REFERENCES Colors(color)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Machinery (
+    machine VARCHAR(400) NOT NULL,
+    dimension_x FLOAT,
+    dimension_y FLOAT,
+    dimension_z FLOAT,
+    material VARCHAR(400) NOT NULL,
+    PRIMARY KEY(name, material),
+    FOREIGN KEY (material) REFERENCES Materials(name, owner)
+    ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS Providers (
     provider VARCHAR(400) NOT NULL PRIMARY KEY,
-    cost_per_cubic_cm FLOAT,
     is_local BOOLEAN DEFAULT TRUE
 );
+
+CREATE TABLE IF NOT EXISTS ProvidersMachinery (
+    provider VARCHAR(400) NOT NULL,
+    machine VARCHAR(400) NOT NULL,
+    material VARCHAR(400) NOT NULL,
+    PRIMARY KEY(provider, machine),
+    FOREIGN KEY (machine, material) REFERENCES Machinery(machine, material)
+    ON DELETE CASCADE
+)
 
 CREATE TABLE IF NOT EXISTS OrderStatus (
     name VARCHAR(400) NOT NULL,
@@ -108,9 +141,14 @@ CREATE TABLE IF NOT EXISTS Orders (
     status INT NOT NULL DEFAULT 0,
     paid BOOLEAN DEFAULT FALSE,
     cost FLOAT,
+    machine VARCHAR(400) NOT NULL,
+    material VARCHAR(400) NOT NULL,
     order_date DATETIME NOT NULL,
     PRIMARY KEY(name, version, owner),
     FOREIGN KEY (name, version, owner) REFERENCES ObjectVersions(name, version, owner)
+    ON DELETE CASCADE,
+    FOREIGN KEY (machine, material) REFERENCES Machinery(machine, material)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Permissions (
