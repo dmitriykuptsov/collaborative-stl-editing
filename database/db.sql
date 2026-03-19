@@ -1,4 +1,4 @@
-DROP DATABASE mystl;
+DROP DATABASE IF EXISTS mystl;
 
 CREATE DATABASE IF NOT EXISTS mystl;
 
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password VARCHAR(200) NOT NULL DEFAULT '',
     salt VARCHAR(100) NOT NULL,
     confirmed BOOLEAN DEFAULT FALSE,
-    enable_two_factor_auth DEFAULT FALSE,
+    enable_two_factor_auth BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (country_code, city_code) REFERENCES Cities(country_code, city_code) ON DELETE CASCADE,
     FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
 );
@@ -59,17 +59,17 @@ CREATE TABLE IF NOT EXISTS ResetPasswordTokens (
 );
 
 CREATE TABLE IF NOT EXISTS Objects (
-    name VARCHAR(400) NOT NULL,
+    object VARCHAR(400) NOT NULL,
     owner VARCHAR(100) NOT NULL,
     description VARCHAR(4000) NOT NULL,
     creation_time DATETIME NOT NULL,
-    PRIMARY KEY (name, owner),
+    PRIMARY KEY (object, owner),
     FOREIGN KEY (owner) REFERENCES Users(username)
     ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ObjectVersions (
-    name VARCHAR(400) NOT NULL,
+    object VARCHAR(400) NOT NULL,
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
     hash VARCHAR(200) NOT NULL,
@@ -85,33 +85,36 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     has_zero_area_triangles BOOLEAN DEFAULT FALSE,
     is_edge_manifold BOOLEAN DEFAULT FALSE,
     is_vertex_manifold BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY(name, version, owner),
-    FOREIGN KEY (name, owner) REFERENCES Objects(name, owner)
+    PRIMARY KEY(object, version, owner),
+    FOREIGN KEY (object, owner) REFERENCES Objects(object, owner)
     ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Colors (
-    color VARCHAR(400) NOT NULL PRIMARY KEY
+    color VARCHAR(100) NOT NULL PRIMARY KEY
 );
 
+
 CREATE TABLE IF NOT EXISTS Materials (
-    material VARCHAR(400) NOT NULL,
-    type_code INT,
-    color VARCHAR(400) NOT NULL,
+    material VARCHAR(100) NOT NULL,
+    type_code INT NOT NULL,
+    color VARCHAR(100) NOT NULL,
     price_per_cubic_cm FLOAT,
     PRIMARY KEY(material, color),
     FOREIGN KEY (color) REFERENCES Colors(color)
     ON DELETE CASCADE
 );
 
+
 CREATE TABLE IF NOT EXISTS Machinery (
-    machine VARCHAR(400) NOT NULL,
+    machine VARCHAR(100) NOT NULL,
     dimension_x FLOAT,
     dimension_y FLOAT,
     dimension_z FLOAT,
-    material VARCHAR(400) NOT NULL,
-    PRIMARY KEY(name, material),
-    FOREIGN KEY (material) REFERENCES Materials(name, owner)
+    material VARCHAR(100) NOT NULL,
+    color VARCHAR(100) NOT NULL,
+    PRIMARY KEY(machine, material, color),
+    FOREIGN KEY (material, color) REFERENCES Materials(material, color)
     ON DELETE CASCADE
 );
 
@@ -122,34 +125,38 @@ CREATE TABLE IF NOT EXISTS Providers (
 
 CREATE TABLE IF NOT EXISTS ProvidersMachinery (
     provider VARCHAR(400) NOT NULL,
-    machine VARCHAR(400) NOT NULL,
-    material VARCHAR(400) NOT NULL,
-    PRIMARY KEY(provider, machine),
-    FOREIGN KEY (machine, material) REFERENCES Machinery(machine, material)
+    machine VARCHAR(100) NOT NULL,
+    material VARCHAR(100) NOT NULL,
+    color VARCHAR(100) NOT NULL,
+    PRIMARY KEY(provider, machine, color),
+    FOREIGN KEY (machine, material, color) REFERENCES Machinery(machine, material, color)
     ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS OrderStatus (
-    name VARCHAR(400) NOT NULL,
-    status INT NOT NULL PRIMARY KEY
+    status VARCHAR(100) NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS Orders (
-    name VARCHAR(400) NOT NULL,
+    order_number VARCHAR(100) NOT NULL PRIMARY KEY,
     version INT NOT NULL,
     owner VARCHAR(100) NOT NULL,
-    status INT NOT NULL DEFAULT 0,
+    status VARCHAR(100) NOT NULL,
     paid BOOLEAN DEFAULT FALSE,
     cost FLOAT,
-    machine VARCHAR(400) NOT NULL,
-    material VARCHAR(400) NOT NULL,
+    object VARCHAR(100) NOT NULL,
+    machine VARCHAR(100) NOT NULL,
+    material VARCHAR(100) NOT NULL,
+    color VARCHAR(100) NOT NULL,
     order_date DATETIME NOT NULL,
-    PRIMARY KEY(name, version, owner),
-    FOREIGN KEY (name, version, owner) REFERENCES ObjectVersions(name, version, owner)
+    FOREIGN KEY (status) REFERENCES OrderStatus(status)
     ON DELETE CASCADE,
-    FOREIGN KEY (machine, material) REFERENCES Machinery(machine, material)
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(object, version, owner)
+    ON DELETE CASCADE,
+    FOREIGN KEY (machine, material, color) REFERENCES Machinery(machine, material, color)
     ON DELETE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS Permissions (
     permission VARCHAR(10) NOT NULL PRIMARY KEY,
@@ -157,24 +164,24 @@ CREATE TABLE IF NOT EXISTS Permissions (
 );
 
 CREATE TABLE IF NOT EXISTS Shares (
-    object VARCHAR(400) NOT NULL,
+    object VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL,
     owner VARCHAR(100) NOT NULL,
     permission VARCHAR(10),
     PRIMARY KEY(object, username, owner),
     FOREIGN KEY (permission) REFERENCES Permissions(permission) ON DELETE CASCADE,
-    FOREIGN KEY (object, owner) REFERENCES Objects(name, owner) ON DELETE CASCADE,
+    FOREIGN KEY (object, owner) REFERENCES Objects(object, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Comments (
-    object VARCHAR(400) NOT NULL,
+    object VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL,
     owner VARCHAR(100) NOT NULL,
     comment TEXT,
     date_of_comment DATETIME,
     PRIMARY KEY (object, username, owner),
-    FOREIGN KEY (object, owner) REFERENCES Objects(name, owner) ON DELETE CASCADE,
+    FOREIGN KEY (object, owner) REFERENCES Objects(object, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -189,12 +196,12 @@ CREATE TABLE IF NOT EXISTS PointAnnotations (
     position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version, owner),
-    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(object, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS DistanceAnnnotations (
-    object VARCHAR(400) NOT NULL,
+    object VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     owner VARCHAR(100) NOT NULL,
@@ -207,12 +214,12 @@ CREATE TABLE IF NOT EXISTS DistanceAnnnotations (
     end_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version, owner),
-    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(object, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS AngleAnnnotations (
-    object VARCHAR(400) NOT NULL,
+    object VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     owner VARCHAR(100) NOT NULL,
@@ -228,6 +235,6 @@ CREATE TABLE IF NOT EXISTS AngleAnnnotations (
     center_position_z FLOAT NOT NULL,
     annotation VARCHAR(1000) NOT NULL,
     PRIMARY KEY (object, username, name, version, owner),
-    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(name, version, owner) ON DELETE CASCADE,
+    FOREIGN KEY (object, version, owner) REFERENCES ObjectVersions(object, version, owner) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
