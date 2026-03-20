@@ -9,10 +9,11 @@ from models.models import Users
 from models.models import Cities
 from models.models import Countries
 from models.models import ConfirmationTokens
-from datetime import datetime
+from datetime import datetime, timedelta
 import secrets
 import re
 from utils.utils import check_password, encode_jwt, is_valid_auth_token, get_auth_token, decode_jwt, hash_password
+from utils.email import send_account_confirmation_password
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -23,6 +24,7 @@ def register():
         return jsonify({
             "success": False
         })
+    
     username = data.get("username", None)
     email = data.get("email", None)
     phone = data.get("phone", None)
@@ -36,36 +38,36 @@ def register():
     if not re.match(r"[a-zA-Z\._0-9]{1,20}@[A-Za-z]{1,10}\.[a-zA-Z]{1,8}", email):
         return jsonify({
             "success": False,
-            "reason": "Invalid email address"
+            "reason": "Неверный адрес электронной почты"
         })
     if not re.match(r"\+[0-9]{10,20}", phone):
         return jsonify({
             "success": False,
-            "reason": "Invalid phone number"
+            "reason": "Неверный формат номера телефона"
         })
     if not re.match(r"[0-9]{4,10}", postal_code):
         return jsonify({
             "success": False,
-            "reason": "Invalid postal code"
+            "reason": "Неверный формат почтового индекса"
         })
     salt = hexlify(os.urandom(32))
     user = Users.query.filter_by(username=data.get("username", None)).first()
     if not user:
         return jsonify({
             "success": False,
-            "reason": "User already exists"
+            "reason": "Пользователь уже существует"
         })
     country = Countries.query.filter_by(country_code=country_code).first()
     if not country:
         return jsonify({
             "success": False,
-            "reason": "Invalid city"
+            "reason": "Неверный код страны"
         })
     city = Cities.query.filter_by(city_code=city_code, country_code=country_code).first()
     if not city:
         return jsonify({
             "success": False,
-            "reason": "Invalid city"
+            "reason": "Неверный код города"
         })
     user = Users()
     user.username = username
@@ -79,41 +81,65 @@ def register():
     user.city_code = city_code
     user.country_code = country_code
     user.confirmed = False
+    user.enable_two_factor_auth = False
     db.session.add(user)
+
+    now = datetime.now()
+    token_exp = now + timedelta(days=1)
 
     confirmation = ConfirmationTokens()
     confirmation.token = hexlify(os.urandom(128))
     confirmation.username = username
+    confirmation.exp = int(token_exp.timestamp())
+
+    send_account_confirmation_password(user.email, confirmation.token)
+
     db.session.add(confirmation)
 
     db.session.commit()
     return jsonify({
             "success": True,
-            "reason": "Verification email was sent to your address"
+            "reason": "Код подтверждения был отправлен на электронную почту"
         })
 
 @mod_auth.route("/confirm_email/", methods=["GET"])
 def confirm_email():
+    
     username = request.args.get("username", None)
     token = request.args.get("token", None)
+
     confirmation = ConfirmationTokens.query.filter_by(username=username, token=token).first()
     if not confirmation:
         return jsonify({
             "success": False,
-            "reason": "Invalid confirmation token"
+            "reason": "Неверный код подтверждения"
         })
     
     user = Users.query.filter_by(username=username).first()
     if not user:
         return jsonify({
             "success": False,
-            "reason": "User does not exist"
-        }) 
+            "reason": "Пользователь не существует"
+        })
+    
+    if user.confirmed:
+        return jsonify({
+            "success": True,
+            "reason": "Учетная запись подтверждена"
+        })
+    
+    if datetime.now().timestamp() > confirmation.exp:
+        return jsonify({
+            "success": False,
+            "reason": "Неверный код подтверждения"
+        })
+    
     user.confirmed = True
     db.session.commit()
+
     return jsonify({
             "success": True,
-            "reason": "Email was confirmed"
+            "reason": "Учетная запись подтверждена"
         })
 
 @mod_auth.route("/signin/", methods=["POST"])
@@ -163,12 +189,16 @@ def renew_token():
         })
     
     if is_valid_auth_token(token, config_["SERVER_NONCE"], config_["TOKEN_KEY"]):
-        if payload["exp"] < datetime.now() - 10*60:
+        if payload["exp"] < int(datetime.now().timestamp()) - 10*60:
             token = encode_jwt(payload["subject"], salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
             resp = make_response(jsonify({
                 "success": True
             }))
-            resp.set_cookie('token', token, max_age=365*24*60*60, httponly=True, secure=False, samesite='Lax')
+            resp.set_cookie('token', token, max_age=24*60*60, httponly=True, secure=False, samesite='Lax')
+        else:
+            return jsonify({
+                "success": True
+            })
     return jsonify({
         "success": False
     })
