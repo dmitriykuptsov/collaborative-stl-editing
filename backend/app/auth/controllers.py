@@ -163,8 +163,8 @@ def signin():
             "success": False
         })
     
-@mod_auth.route("/reset_password/", methods=["POST"])
-def reset_password():
+@mod_auth.route("/reset_password_request/", methods=["POST"])
+def reset_password_request():
     data = request.get_json(force=True)
     if not data:
         return jsonify({
@@ -192,6 +192,59 @@ def reset_password():
     db.session.commit()
     return jsonify({
             "success": True
+        })
+
+@mod_auth.route("/reset_password/", methods=["POST"])
+def reset_password():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
+    username = data.get("username", None)
+    token = data.get("token", None)
+    password = data.get("password", None)
+
+    confirmation = ConfirmationTokens.query.filter_by(username=username, token=token).first()
+    
+    if not confirmation:
+        return jsonify({
+            "success": False,
+            "reason": "Неверный код подтверждения"
+        })
+    
+    user = Users.query.filter_by(username=username).first()
+    
+    if not user:
+        return jsonify({
+            "success": False,
+            "reason": "Пользователь не существует"
+        })
+    
+    if not user.confirmed:
+        return jsonify({
+            "success": True,
+            "reason": "Учетная запись не подтверждена"
+        })
+    
+    if datetime.now().timestamp() > confirmation.exp:
+        return jsonify({
+            "success": False,
+            "reason": "Неверный код подтверждения"
+        })
+    db.session.delete(confirmation)
+    db.session.commit()
+    
+    salt = hexlify(os.urandom(32))
+    
+    user.password = hash_password(password, salt)
+    user.salt = salt
+    
+    db.session.commit()
+
+    return jsonify({
+            "success": True,
+            "reason": "Пароль был изменен"
         })
 
 @mod_auth.route("/logout/", methods=["GET"])
