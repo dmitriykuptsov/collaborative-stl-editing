@@ -77,6 +77,7 @@ export default {
   mounted() {
     this.checkAuth();
     this.pollAuthData();
+    this.pollRenewToken();
     this.$router.push("/mystl");
   },
   components: {
