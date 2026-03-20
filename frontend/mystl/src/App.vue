@@ -42,6 +42,14 @@ export default {
         }
       });
     },
+    renewToken() {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      const url = this.$BASE_URL + "/auth/renew_token/";
+      axios.post(url, {}, { headers }).then(() => {
+      });
+    },
     logout() {
       const headers = {
         "Content-Type": "application/json"
@@ -60,6 +68,11 @@ export default {
         this.checkAuth();
       }, 60000);
     },
+    pollRenewToken() {
+      this.renewing = setInterval(() => {
+        this.renewToken()
+      }, 10*60000);
+    }
   },
   mounted() {
     this.checkAuth();
