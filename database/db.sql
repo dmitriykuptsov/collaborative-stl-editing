@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS ProvidersMachinery (
     machine VARCHAR(100) NOT NULL,
     material VARCHAR(100) NOT NULL,
     color VARCHAR(100) NOT NULL,
-    PRIMARY KEY(provider, machine, color),
+    PRIMARY KEY(provider, machine, material, color),
     FOREIGN KEY (machine, material, color) REFERENCES Machinery(machine, material, color)
     ON DELETE CASCADE
 );
