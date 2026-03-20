@@ -48,8 +48,7 @@ export default {
       };
       const url = this.$BASE_URL + "/auth/logout/";
       axios.post(url, {}, { headers }).then((response) => {
-        this.loaded = true;
-        if (response.data.valid) {
+        if (response.data.success) {
           this.isAuthenticated = true;
         } else {
           this.isAuthenticated = false;
