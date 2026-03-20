@@ -64,22 +64,22 @@ class Objects(db.Model):
 class ObjectVersions(db.Model):
     __tablename__  = "ObjectVersions"
 
-    object         = db.Column(db.String(400), nullable=False, primary_key=True)
-    version        = db.Column(db.Integer, nullable=False)
-    owner          = db.Column(db.String(100), nullable=False)
-    hash           = db.Column(db.String(200), nullable=False)
-    date_uploaded  = db.Column(db.Date, nullable=False)
-    surface_area   = db.Column(db.Float(10, 10))
-    volume         = db.Column(db.Float(10, 10))
-    cog_x          = db.Column(db.Float(10, 10))
-    cog_y          = db.Column(db.Float(10, 10))
-    cog_z          = db.Column(db.Float(10, 10))
-    is_water_tight = db.Column(db.Boolean, default=True)
-    number_of_facets = db.Column(db.Integer)
+    object                     = db.Column(db.String(400), nullable=False, primary_key=True)
+    version                    = db.Column(db.Integer, nullable=False)
+    owner                      = db.Column(db.String(100), nullable=False)
+    hash                       = db.Column(db.String(200), nullable=False)
+    date_uploaded              = db.Column(db.Date, nullable=False)
+    surface_area               = db.Column(db.Float(10, 10))
+    volume                     = db.Column(db.Float(10, 10))
+    cog_x                      = db.Column(db.Float(10, 10))
+    cog_y                      = db.Column(db.Float(10, 10))
+    cog_z                      = db.Column(db.Float(10, 10))
+    is_water_tight             = db.Column(db.Boolean, default=True)
+    number_of_facets           = db.Column(db.Integer)
     number_of_unique_verticies = db.Column(db.Integer)
-    has_zero_area_triangles = db.Column(db.Boolean)
-    is_edge_manifold = db.Column(db.Boolean)
-    is_vertex_manifold = db.Column(db.Boolean)
+    has_zero_area_triangles    = db.Column(db.Boolean)
+    is_edge_manifold           = db.Column(db.Boolean)
+    is_vertex_manifold         = db.Column(db.Boolean)
 
 
 class Objects(db.Model):
