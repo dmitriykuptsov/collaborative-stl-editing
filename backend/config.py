@@ -6,7 +6,6 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database 
-#SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/balans"
 
 SQLALCHEMY_DATABASE_URI = "mysql://root:password@localhost/mystl"
 
@@ -37,17 +36,7 @@ SERVER_NONCE = "RabroyllIjhywofuckcorwojnamvowAg"
 # Validity of the token in days
 JWT_VALIDITY_IN_DAYS = 30
 
-# Report directory
-#REPORT_OUTPUT_FOLDER = "/opt/balans/output/"
-#REPORT_OUTPUT_FOLDER = "C:\\Work\\balance\\backend\\output\\"
-REPORT_OUTPUT_FOLDER = "/Users/dmitriykuptsov/workspace/front-end-development/balance/backend/output"
-
-# File storage
-#SUPPLEMENT_FILE_STORAGE = "/opt/balans/repository/"
-#SUPPLEMENT_FILE_STORAGE = "C:\\Work\\balance\\repository\\"
-SUPPLEMENT_FILE_STORAGE = "/Users/dmitriykuptsov/workspace/front-end-development/balance/repository"
-ALLOWED_EXTENSIONS = ['str', 'dat', 'doc', 'docx', 'tridb', 'jpeg', 'jpg', 'png']
-
-MAX_CONTENT_PATH = 30*1024*1024;
-
-IMPORT_FILE_STORAGE = "/Users/dmitriykuptsov/workspace/front-end-development/balance/backend/import"
+EMAIL_ADDRESS = "dmitriy.kuptsov@gmail.com"
+EMAIL_PASSWORD = "your_app_password"
+#EMAIL_CONFIRMATION_LINK = "https://solid-engineering.strangebit.io/confirm/"
+EMAIL_CONFIRMATION_LINK = "http://localhost:8080/confirm_email/?token=#token"
