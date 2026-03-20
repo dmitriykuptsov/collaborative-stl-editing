@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import secrets
 import re
 from utils.utils import check_password, encode_jwt, is_valid_auth_token, get_auth_token, decode_jwt, hash_password
-from utils.email import send_account_confirmation_password
+from utils.email import send_account_confirmation_password, send_password_reset_confirmation_password
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -161,6 +161,37 @@ def signin():
     else:
         return jsonify({
             "success": False
+        })
+    
+@mod_auth.route("/reset_password/", methods=["POST"])
+def reset_password():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
+    username = data.get("username", None)
+    email = data.get("email", None)
+
+    user = Users.query.filter_by(db.or_(username=username, email=email)).first()
+
+    if not user:
+        return jsonify({
+            "success": False,
+            "reason": "Пользователь не найден"
+        })
+    
+    now = datetime.now()
+    token_exp = now + timedelta(days=1)
+    confirmation = ConfirmationTokens()
+    confirmation.token = hexlify(os.urandom(128))
+    confirmation.username = username
+    confirmation.exp = int(token_exp.timestamp())
+    send_password_reset_confirmation_password(user.email, confirmation.token)
+    db.session.add(confirmation)
+    db.session.commit()
+    return jsonify({
+            "success": True
         })
 
 @mod_auth.route("/logout/", methods=["GET"])
