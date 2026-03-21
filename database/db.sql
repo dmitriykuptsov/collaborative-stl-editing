@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS Countries (
     PRIMARY KEY (country_code)
 );
 
+INSERT INTO Countries VALUES('UZ', 'Узбекистан');
+
 CREATE TABLE IF NOT EXISTS Cities (
     city_code VARCHAR(10),
     city VARCHAR(200),
@@ -17,6 +19,9 @@ CREATE TABLE IF NOT EXISTS Cities (
     PRIMARY KEY (country_code, city_code),
     FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
 );
+
+INSERT INTO Cities VALUES('TASH', 'Ташкент', 'UZ');
+INSERT INTO Cities VALUES('SAM', 'Самарканд', 'UZ');
 
 CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(100) NOT NULL PRIMARY KEY,
