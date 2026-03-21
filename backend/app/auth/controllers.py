@@ -300,12 +300,12 @@ def reset_password():
             "reason": "Пароль был изменен"
         })
 
-@mod_auth.route("/logout/", methods=["GET"])
+@mod_auth.route("/logout/", methods=["POST"])
 def logout():
     resp = make_response(jsonify({
         "success": True
     }))
-    resp.set_cookie('token', None, max_age=0)
+    resp.set_cookie('token', "", max_age=0)
     return resp
 
 @mod_auth.route("/validate_token/", methods=["POST"])

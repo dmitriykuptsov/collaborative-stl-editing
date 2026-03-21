@@ -1,10 +1,16 @@
 <template>
   <div v-if="isAuthenticated">
     <header>
-      <div class="title">
-        <span id="caption-text">Это тестовая страница.....</span>
+      <div style="right: 10px; top: 10px; position: absolute;">
+        <button @click="logout" class="btn btn-light btn-small btn-block">
+          <i class="bi bi-door-open fs-4"></i>
+          Выйти
+        </button>
       </div>
     </header>
+    <div>
+        
+    </div>
   </div>
 </template>
 
@@ -52,8 +58,6 @@ export default {
       const url = this.$BASE_URL + "/auth/logout/";
       axios.post(url, {}, { headers }).then((response) => {
         if (response.data.success) {
-          this.isAuthenticated = true;
-        } else {
           this.isAuthenticated = false;
           this.$router.push("/login/");
         }
