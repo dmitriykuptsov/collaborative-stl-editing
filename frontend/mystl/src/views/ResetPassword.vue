@@ -1,18 +1,29 @@
 <template>
   <div class="form-group" style="margin-top: 100px">
     <p class="alert alert-success" style="text-align: center">
-      Нажмите кнопку подтвердить для завершения верификации!
+      Введите новый пароль и сохраните!
     </p>
+    <br>
+    <div class="input-group input-group-lg">
+      <div class="input-group-addon">
+      </div>
+      <input
+        type="password"
+        class="form-control form-control-lg"
+        v-model="password"
+      />
+    </div>
+    <br>
     <button
       @click="confirm"
       class="btn btn-light btn-small btn-block btn-confirm"
     >
-      Подтвердить
+      Сохранить
     </button>
     <div class="form-group" v-if="confirmed" style="margin-top: 10px">
       <div class="alert alert-success" role="alert">
-        Учетная запись подтверждена. Вы будете перенаправлены на страницу входа
-        через 3 секунды
+        Пароль изменен. Вы будете перенаправлены на страницу входа через 3
+        секунды
       </div>
     </div>
 
@@ -37,6 +48,7 @@ export default {
       confirmed: false,
       error: false,
       error_msg: "",
+      password: ""
     };
   },
   methods: {
@@ -44,13 +56,14 @@ export default {
       const headers = {
         "Content-Type": "application/json",
       };
-      const url = this.$BASE_URL + "/auth/confirm_email/";
+      const url = this.$BASE_URL + "/auth/reset_password/";
       axios
         .post(
           url,
           {
             username: this.$route.query.username,
             token: this.$route.query.token,
+            password: this.password
           },
           { headers },
         )

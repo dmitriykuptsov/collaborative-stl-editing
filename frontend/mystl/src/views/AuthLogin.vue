@@ -12,6 +12,10 @@
       v-if="showRegistrationModal"
       v-on:close="closeRegistrationModal"
     />
+    <ResetPasswordRequestModal
+      v-if="showResetPasswordRequestModal"
+      v-on:close="closeResetPasswordResetModal"
+    />
     <div class="login-div">
       <form class="login-form">
         <div class="form-group">
@@ -77,6 +81,12 @@
             Пользователь зарегистрирован. Проверьте почту для подтверждения
           </div>
         </div>
+        <div class="form-group" v-if="resetted" style="margin-top: 10px">
+          <div class="alert alert-success" role="alert">
+            Ссылка на сборос пароля отправлена. Проверьте почту для
+            подтверждения
+          </div>
+        </div>
       </form>
       <div class="services">
         Что мы предлагаем:
@@ -98,6 +108,7 @@
 <script>
 import axios from "axios";
 import RegistrationModalVue from "../components/RegistrationModal.vue";
+import ResetPasswordRequestModal from "../components/ResetPasswordRequestModal.vue";
 
 export default {
   name: "AuthLogin",
@@ -107,13 +118,23 @@ export default {
       password: "",
       failed: false,
       registered: false,
+      resetted: false,
       showRegistrationModal: false,
+      showResetPasswordRequestModal: false,
     };
   },
   methods: {
+    closeResetPasswordResetModal() {
+      this.showResetPasswordRequestModal = false;
+      this.resetted = true;
+    },
     closeRegistrationModal() {
       this.showRegistrationModal = false;
       this.registered = true;
+    },
+    reset(e) {
+      this.showResetPasswordRequestModal = true;
+      e.preventDefault();
     },
     register(e) {
       this.showRegistrationModal = true;
@@ -125,7 +146,10 @@ export default {
         "Content-Type": "application/json",
       };
       axios
-        .post(this.$BASE_URL + "/auth/signin/", data, { headers, withCredentials: true })
+        .post(this.$BASE_URL + "/auth/signin/", data, {
+          headers,
+          withCredentials: true,
+        })
         .then((response) => {
           if (response.data.success) {
             this.$parent.isAuthenticated = true;
@@ -139,6 +163,7 @@ export default {
   },
   components: {
     RegistrationModalVue,
+    ResetPasswordRequestModal,
   },
 };
 </script>

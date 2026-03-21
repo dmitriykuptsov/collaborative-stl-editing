@@ -224,9 +224,8 @@ def reset_password_request():
             "success": False
         })
     username = data.get("username", None)
-    email = data.get("email", None)
 
-    user = Users.query.filter_by(db.or_(username=username, email=email)).first()
+    user = Users.query.filter(db.or_(Users.username==username, Users.email==username)).first()
 
     if not user:
         return jsonify({
@@ -240,7 +239,7 @@ def reset_password_request():
     confirmation.token = hexlify(os.urandom(32)).decode("UTF-8")
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
-    send_password_reset_confirmation(username, user.email, confirmation.token)
+    #send_password_reset_confirmation(username, user.email, confirmation.token)
     db.session.add(confirmation)
     db.session.commit()
     return jsonify({
@@ -288,7 +287,7 @@ def reset_password():
     db.session.delete(confirmation)
     db.session.commit()
 
-    salt = hexlify(os.urandom(32))
+    salt = hexlify(os.urandom(32)).decode("UTF-8")
     
     user.password = hash_password(password, salt)
     user.salt = salt

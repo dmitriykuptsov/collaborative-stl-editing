@@ -193,7 +193,7 @@ export default {
     verifyEmail() {
       if (
         !RegExp("[a-zA-Z.0-9_-]+@[a-zA-Z0-9]+.[a-zA-Z0-9]{2,5}").exec(
-          this.email
+          this.email,
         )
       ) {
         this.failed = true;

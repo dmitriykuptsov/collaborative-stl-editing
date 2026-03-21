@@ -11,7 +11,7 @@
 <script>
 import axios from "axios";
 
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 export default {
   name: "App",
@@ -134,7 +134,8 @@ export default {
   color: rgb(255, 255, 255);
   box-shadow: transparent 0px 0px 0px 2px;
   background-color: rgba(120, 119, 125, 0.6);
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }
@@ -160,7 +161,8 @@ export default {
 #exit-btn:hover {
   background-color: rgba(79, 67, 140, 0.8);
   box-shadow: transparent 0px 0px 0px 2px;
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }
@@ -188,7 +190,8 @@ export default {
   color: rgb(255, 255, 255);
   box-shadow: transparent 0px 0px 0px 2px;
   background-color: rgba(120, 119, 125, 0.6);
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }

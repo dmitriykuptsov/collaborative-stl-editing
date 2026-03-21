@@ -5,19 +5,14 @@
 </template>
 
 <script>
-
 export default {
   name: "App",
   data() {
-    return {
-    };
+    return {};
   },
-  methods: {
-  },
-  mounted() {
-  },
-  components: {
-  },
+  methods: {},
+  mounted() {},
+  components: {},
 };
 </script>
 
