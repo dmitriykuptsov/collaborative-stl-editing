@@ -16,7 +16,9 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder = 'templates/static')
 
 # Allow Cross origin requests
-cors = CORS(app, resources={r"*": {"origins": "*"}})
+cors = CORS(app, 
+			supports_credentials=True,
+			resources={r"*": {"origins": "http://localhost:8080"}})
 
 # Configurations
 app.config.from_object('config')

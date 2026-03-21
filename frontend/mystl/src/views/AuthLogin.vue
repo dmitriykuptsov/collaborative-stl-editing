@@ -125,7 +125,7 @@ export default {
         "Content-Type": "application/json",
       };
       axios
-        .post(this.$BASE_URL + "/auth/signin/", data, { headers })
+        .post(this.$BASE_URL + "/auth/signin/", data, { headers, withCredentials: true })
         .then((response) => {
           if (response.data.success) {
             this.$parent.isAuthenticated = true;
