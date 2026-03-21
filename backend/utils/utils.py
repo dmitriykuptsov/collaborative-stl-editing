@@ -30,9 +30,6 @@ def hash_password(password, salt):
     """
     Hashes password
     """
-    print("Hashing password and salt")
-    print(password)
-    print(salt)
     h = SHA256.new()
     h.update(str.encode(password + salt, encoding="UTF-8"))
     c_hashed = h.hexdigest()
