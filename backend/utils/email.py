@@ -2,13 +2,12 @@ import smtplib
 from email.message import EmailMessage
 from config import EMAIL_ADDRESS, EMAIL_PASSWORD, EMAIL_CONFIRMATION_LINK, PASSWORD_RESET_LINK
 
-def send_account_confirmation_password(recipient, token):
+def send_account_confirmation(recipient, token):
     msg = EmailMessage()
     msg["Subject"] = "Подтверждение аккаунта SolidEngineering"
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = recipient
 
-    # Plain text fallback
     msg.set_content(f"""
 Добрый день,
 
@@ -26,7 +25,7 @@ def send_account_confirmation_password(recipient, token):
     <body style="font-family: Arial, sans-serif; background:#f9fafb; padding:20px;">
       <div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
         
-        <h2 style="margin-top:0;">Welcome 👋</h2>
+        <h2 style="margin-top:0;">Добрый день</h2>
         
         <p>Спасибо за регестрацию на сайте Solid-Engineering.strangebit.io! Пожалуйста подтвердите ваш адрес электронной почты:</p>
 
@@ -72,7 +71,6 @@ def send_password_reset_confirmation_password(recipient, token):
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = recipient
 
-    # Plain text fallback
     msg.set_content(f"""
 Добрый день,
 
@@ -90,7 +88,7 @@ def send_password_reset_confirmation_password(recipient, token):
     <body style="font-family: Arial, sans-serif; background:#f9fafb; padding:20px;">
       <div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
         
-        <h2 style="margin-top:0;">Welcome 👋</h2>
+        <h2 style="margin-top:0;">Добрый день</h2>
         
         <p>Вы запросили сброс пароля для сервиса SolidEngineering. Пожалуйста подтвердите ваш адрес электронной почты:</p>
 

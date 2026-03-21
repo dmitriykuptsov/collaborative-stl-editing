@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded" style="width: 100%;">
+  <div v-if="loaded" style="width: 100%">
     <div v-if="isAuthenticated">
       <header>
         <div class="title">
@@ -8,7 +8,7 @@
       </header>
       <router-view></router-view>
     </div>
-    <div v-if="!isAuthenticated" style="width: 100%;">
+    <div v-if="!isAuthenticated" style="width: 100%">
       <AuthLogin />
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
   methods: {
     checkAuth() {
       const headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       };
       const url = this.$BASE_URL + "/auth/validate_token/";
       axios.post(url, {}, { headers }).then((response) => {
@@ -44,15 +44,14 @@ export default {
     },
     renewToken() {
       const headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       };
       const url = this.$BASE_URL + "/auth/renew_token/";
-      axios.post(url, {}, { headers }).then(() => {
-      });
+      axios.post(url, {}, { headers }).then(() => {});
     },
     logout() {
       const headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       };
       const url = this.$BASE_URL + "/auth/logout/";
       axios.post(url, {}, { headers }).then((response) => {
@@ -70,9 +69,9 @@ export default {
     },
     pollRenewToken() {
       this.renewing = setInterval(() => {
-        this.renewToken()
-      }, 10*60000);
-    }
+        this.renewToken();
+      }, 10 * 60000);
+    },
   },
   mounted() {
     this.checkAuth();
@@ -141,7 +140,8 @@ export default {
   color: rgb(255, 255, 255);
   box-shadow: transparent 0px 0px 0px 2px;
   background-color: rgba(120, 119, 125, 0.6);
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }
@@ -167,7 +167,8 @@ export default {
 #exit-btn:hover {
   background-color: rgba(79, 67, 140, 0.8);
   box-shadow: transparent 0px 0px 0px 2px;
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }
@@ -195,7 +196,8 @@ export default {
   color: rgb(255, 255, 255);
   box-shadow: transparent 0px 0px 0px 2px;
   background-color: rgba(120, 119, 125, 0.6);
-  transition: background 0.1s ease-out 0s,
+  transition:
+    background 0.1s ease-out 0s,
     box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
   border-radius: 3px;
 }

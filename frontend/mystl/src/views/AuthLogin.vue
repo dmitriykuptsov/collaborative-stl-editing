@@ -1,14 +1,14 @@
 <template>
   <div class="login-main">
-    <img src="@/assets/logo.png" class="logo"/>
+    <img src="@/assets/logo.png" class="logo" />
     <div class="login-text">
-      <h3 style="color: white; margin-bottom: 100px;">
-        Solid Engineering - то место где цифра 
-        <br> превращается в физический объект
+      <h3 style="color: white; margin-bottom: 100px">
+        Solid Engineering - то место где цифра
+        <br />
+        превращается в физический объект
       </h3>
-      
     </div>
-    
+    <RegistrationModalVue v-if="showRegistrationModal" v-on:close="closeRegistrationModal" />
     <div class="login-div">
       <form class="login-form">
         <div class="form-group">
@@ -42,15 +42,24 @@
           </div>
         </div>
         <div class="form-group" style="margin-top: 10px">
-          <button @click="login" class="btn btn-light btn-small btn-block btn-login btn-login-group">
+          <button
+            @click="login"
+            class="btn btn-light btn-small btn-block btn-login btn-login-group"
+          >
             <i class="bi bi-door-open"></i>
             Войти
           </button>
-          <button @click="reset" class="btn btn-light btn-small btn-block btn-reset btn-login-group">
+          <button
+            @click="reset"
+            class="btn btn-light btn-small btn-block btn-reset btn-login-group"
+          >
             <i class="bi bi-pass"></i>
             Восстановить пароль
           </button>
-          <button @click="register" class="btn btn-light btn-small btn-block btn-login btn-login-group">
+          <button
+            @click="register"
+            class="btn btn-light btn-small btn-block btn-login btn-login-group"
+          >
             <i class="bi bi-people"></i>
             Зарегестрироваться
           </button>
@@ -60,25 +69,23 @@
             Неверный логин или пароль
           </div>
         </div>
+        <div class="form-group" v-if="registered" style="margin-top: 10px">
+          <div class="alert alert-success" role="alert">
+            Пользователь зарегистрирован. Проверьте почту для подтверждения
+          </div>
+        </div>
       </form>
       <div class="services">
         Что мы предлагаем:
         <ul>
+          <li>Колаборация и совместное обсуждение ваших 3D дезайнов</li>
+          <li>Валидация 3D моделей</li>
+          <li>Подготовка к печати</li>
           <li>
-            Колаборация и совместное обсуждение ваших 3D дезайнов
+            Высокоточная SLA печать на оборудование от ведущих производителей
+            (на данный момент мы используем Formlabs Form 4 3D)
           </li>
-          <li>
-            Валидация 3D моделей
-          </li>
-          <li>
-            Подготовка к печати
-          </li>
-          <li>
-            Высокоточная SLA печать на оборудование от ведущих производителей (на данный момент мы используем Formlabs Form 4 3D)
-          </li>
-          <li>
-            Доставка ваших изделий курьером
-          </li>
+          <li>Доставка ваших изделий курьером</li>
         </ul>
       </div>
     </div>
@@ -87,7 +94,7 @@
 
 <script>
 import axios from "axios";
-
+import RegistrationModalVue from '../components/RegistrationModal.vue';
 
 export default {
   name: "AuthLogin",
@@ -95,10 +102,21 @@ export default {
     return {
       username: "",
       password: "",
-      failed: false
+      failed: false,
+      registered: false,
+      showRegistrationModal: false,
+
     };
   },
   methods: {
+    closeRegistrationModal() {
+      this.showRegistrationModal = false;
+      this.registered = true;
+    },
+    register(e) {
+      this.showRegistrationModal = true;
+      e.preventDefault();
+    },
     login(e) {
       const data = { username: this.username, password: this.password };
       const headers = {
@@ -114,9 +132,10 @@ export default {
           this.failed = !response.data.success;
         });
       e.preventDefault();
-    }
+    },
   },
   components: {
+    RegistrationModalVue,
   },
 };
 </script>
@@ -182,6 +201,6 @@ h3 {
 }
 
 .login-main {
-  width: 100%; 
+  width: 100%;
 }
 </style>

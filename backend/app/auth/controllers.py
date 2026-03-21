@@ -13,9 +13,43 @@ from datetime import datetime, timedelta
 import secrets
 import re
 from utils.utils import check_password, encode_jwt, is_valid_auth_token, get_auth_token, decode_jwt, hash_password
-from utils.email import send_account_confirmation_password, send_password_reset_confirmation_password
+from utils.email import send_account_confirmation, send_password_reset_confirmation_password
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
+
+@mod_auth.route("/get_contries/", methods=["POST"])
+def get_contries():
+    countries = Countries.query.all()
+    result = []
+    for _ in countries:
+        result.append({
+            "code": _.country_code,
+            "country": _.country
+        })
+    return jsonify({
+            "success": True,
+            "result": result
+        })
+
+@mod_auth.route("/get_cities/", methods=["POST"])
+def get_cities():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
+    country = data.get("country", None)
+    cities = Cities.query.filter_by(country_code=country).all()
+    result = []
+    for _ in cities:
+        result.append({
+            "code": _.city_code,
+            "city": _.city
+        })
+    return jsonify({
+            "success": True,
+            "result": result
+        })
 
 @mod_auth.route("/register/", methods=["POST"])
 def register():
@@ -40,7 +74,7 @@ def register():
             "success": False,
             "reason": "Неверный адрес электронной почты"
         })
-    if not re.match(r"\+[0-9]{10,20}", phone):
+    if not re.match(r"\+[0-9_\-\+]{10,20}", phone):
         return jsonify({
             "success": False,
             "reason": "Неверный формат номера телефона"
@@ -50,9 +84,9 @@ def register():
             "success": False,
             "reason": "Неверный формат почтового индекса"
         })
-    salt = hexlify(os.urandom(32))
+    salt = str(hexlify(os.urandom(32)))
     user = Users.query.filter_by(username=data.get("username", None)).first()
-    if not user:
+    if user:
         return jsonify({
             "success": False,
             "reason": "Пользователь уже существует"
@@ -72,6 +106,7 @@ def register():
     user = Users()
     user.username = username
     user.password = hash_password(password, salt)
+    user.email = email
     user.salt = salt
     user.phone = phone
     user.first_name = first_name
@@ -83,16 +118,17 @@ def register():
     user.confirmed = False
     user.enable_two_factor_auth = False
     db.session.add(user)
+    db.session.commit()
 
     now = datetime.now()
     token_exp = now + timedelta(days=1)
 
     confirmation = ConfirmationTokens()
-    confirmation.token = hexlify(os.urandom(128))
+    confirmation.token = str(hexlify(os.urandom(32)))
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
 
-    send_account_confirmation_password(user.email, confirmation.token)
+    #send_account_confirmation(user.email, confirmation.token)
 
     db.session.add(confirmation)
 
@@ -184,7 +220,7 @@ def reset_password_request():
     now = datetime.now()
     token_exp = now + timedelta(days=1)
     confirmation = ConfirmationTokens()
-    confirmation.token = hexlify(os.urandom(128))
+    confirmation.token = str(hexlify(os.urandom(32)))
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
     send_password_reset_confirmation_password(user.email, confirmation.token)
@@ -234,7 +270,7 @@ def reset_password():
         })
     db.session.delete(confirmation)
     db.session.commit()
-    
+
     salt = hexlify(os.urandom(32))
     
     user.password = hash_password(password, salt)
