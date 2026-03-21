@@ -82,6 +82,7 @@ class ObjectVersions(db.Model):
     bb_z_h                     = db.Column(db.Float(10, 10))
     is_water_tight             = db.Column(db.Boolean, default=True)
     number_of_facets           = db.Column(db.Integer)
+    number_of_unique_edges     = db.Column(db.Integer)
     number_of_unique_verticies = db.Column(db.Integer)
     has_zero_area_triangles    = db.Column(db.Boolean)
     is_edge_manifold           = db.Column(db.Boolean)

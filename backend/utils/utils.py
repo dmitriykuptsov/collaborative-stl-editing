@@ -63,7 +63,7 @@ def check_password(password, salt, hashed):
     c_hashed = h.hexdigest()
     return  bytes(c_hashed, encoding="UTF-8") == hashed 
 
-def encode_jwt(username, role_id, salt, server_nonce, days, key):
+def encode_jwt(username, salt, server_nonce, days, key):
     """
     Create an ecoded JSON token
     """
@@ -72,8 +72,7 @@ def encode_jwt(username, role_id, salt, server_nonce, days, key):
         "iat": datetime.datetime.utcnow(),
         "subject": username,
         "salt": salt,
-        "server_nonce": server_nonce,
-        "role_id": role_id
+        "server_nonce": server_nonce
     }
     return jwt.encode(
         payload,
@@ -140,13 +139,9 @@ def get_role(request, config):
 
 def get_subject(request, config):
     auth_token = get_auth_token(request)
-    print("GET ROLE....")
-    print(auth_token)
     if auth_token != None and auth_token != "":
-        #return is_valid_auth_token(token, config["SERVER_NONCE"], config["TOKEN_KEY"])
         try:
             payload = jwt.decode(auth_token, config["TOKEN_KEY"], algorithms=["HS256"])
-            print(payload)
             return payload["subject"]
         except Exception as e:
             print(e)

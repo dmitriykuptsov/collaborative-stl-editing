@@ -1,21 +1,50 @@
 <template>
   <div v-if="isAuthenticated">
-    <header>
-      <div style="right: 10px; top: 10px; position: absolute;">
-        <button @click="logout" class="btn btn-light btn-small btn-block">
-          <i class="bi bi-door-open fs-4"></i>
-          Выйти
-        </button>
+    <CreateObject
+      v-if="showCreateObject"
+      v-on:close="closeCreateObject"
+    />
+    <div class="menu">
+      <div class="menu-item" @click="createObject">
+        <i class="bi bi-plus fs-4"></i>
+        Новый проект
       </div>
-    </header>
-    <div>
-        
+      <div class="menu-item">
+        <i class="bi bi-file fs-4"></i>
+        Настройки
+      </div>
+      <div class="menu-item" @click="logout">
+        <i class="bi bi-door-open fs-4"></i>
+        Выйти
+      </div>      
+    </div>
+    <div class="container">
+      <div class="col1">
+        <div class="col-header">
+          Проекты
+        </div>
+        <div v-for="_ in objects" v-bind:key="_.name" class="project">
+          <div style="font-weight: bolder;">Проект: {{_.name}}</div> 
+          Дата создания: <span class="badge bg-danger">{{_.creation_date}}</span>
+        </div>
+      </div>
+      <div class="col2">
+        <div class="col-header">
+          3D вьюер
+        </div>
+      </div>
+      <div class="col3">
+        <div class="col-header">
+          Версии
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import CreateObject from '../components/CreateObject.vue';
 
 axios.defaults.withCredentials = true;
 
@@ -23,12 +52,39 @@ export default {
   name: "App",
   data() {
     return {
+      showCreateObject: false,
       isAuthenticated: true,
       loaded: false,
       menuItemsActive: {},
+      objects: []
     };
   },
   methods: {
+    closeCreateObject() {
+      this.showCreateObject = false;
+      this.getObjects();
+    },
+    createObject(e) {
+      this.showCreateObject = true;
+      this.getObjects();
+      e.preventDefault();
+    },
+    getObjects() {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/get_objects/";
+      axios.post(url, {}, { headers }).then((response) => {
+        this.loaded = true;
+        if (!response.data.auth_fail) {
+          this.isAuthenticated = true;
+          this.objects = response.data.result;
+        } else {
+          this.isAuthenticated = false;
+          this.$router.push("/login/");
+        }
+      });
+    },
     checkAuth() {
       const headers = {
         "Content-Type": "application/json",
@@ -78,125 +134,84 @@ export default {
     this.checkAuth();
     this.pollAuthData();
     this.pollRenewToken();
+    this.getObjects();
   },
-  components: {},
+  components: {
+    CreateObject,
+  },
 };
 </script>
 
 <style scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  width: 100%;
+.menu {
+  background-color: rgb(255, 255, 255);
 }
 
-#nav {
-  padding: 25px 30px;
-  margin: 0 auto;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #ffffff;
-  /* min-height: 75px; */
-  font-family: "Dazzed", sans-serif;
-  /* align-items: center; */
-  text-decoration: none;
-  margin: 0 1px;
-}
-
-#caption-text {
-  font-size: 18px;
-}
-
-#logo {
-  position: absolute;
-  bottom: 20px;
-  margin-left: 20px;
-}
-
-#logo_top {
-  position: absolute;
-  display: block;
-  margin-left: 3.4%;
-}
-
-.nav-btn {
-  display: inline-block;
-  height: 35px;
-  max-width: 100%;
+.menu-item {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: rgb(152, 152, 152);
+  vertical-align: center;
+  display: flex;
   align-items: center;
-  line-height: 2.28571em;
-  vertical-align: middle;
-  padding: 0 6px;
+  justify-content: center;
 }
 
-.nav-btn:hover {
-  color: rgb(255, 255, 255);
-  box-shadow: transparent 0px 0px 0px 2px;
-  background-color: rgba(120, 119, 125, 0.6);
-  transition:
-    background 0.1s ease-out 0s,
-    box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
-  border-radius: 3px;
-}
-
-.nav-btn:focus {
-  background-color: rgba(106, 103, 121, 0.6);
-  border-radius: 3px;
-}
-
-#exit-btn {
-  background-color: rgb(79, 67, 140);
-  border-style: none;
-  border-radius: 3px;
-  display: inline-flex;
-  height: 35px;
-  max-width: 100%;
+.menu-item:hover {
+  cursor: pointer;
+  background-color: rgb(73, 73, 73);
+  vertical-align: center;
+  display: flex;
   align-items: center;
-  line-height: 2.28571em;
-  vertical-align: middle;
-  padding: 0 6px;
+  justify-content: center;
 }
 
-#exit-btn:hover {
-  background-color: rgba(79, 67, 140, 0.8);
-  box-shadow: transparent 0px 0px 0px 2px;
-  transition:
-    background 0.1s ease-out 0s,
-    box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
-  border-radius: 3px;
+.project {
+  cursor: pointer;
+  background-color: rgb(152, 152, 152);
+  margin: 10px;
 }
 
-#exit-btn:focus {
-  background-color: inherit;
+.project:hover {
+  cursor: pointer;
+  background-color: rgb(73, 73, 73);
+  margin: 10px;
 }
 
-.title {
+.container {
+  max-width: 2000px;
+  margin-top: 20px;
   width: 100%;
-  display: block;
-  position: fixed;
-  top: 0%;
-  z-index: 1;
-  background: #ffffff;
-  text-align: center;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  font-weight: bold;
+  display: flex;
+  gap: 20px;
 }
 
-.selected-menu-item {
-  color: rgb(255, 255, 255);
-  box-shadow: transparent 0px 0px 0px 2px;
-  background-color: rgba(120, 119, 125, 0.6);
-  transition:
-    background 0.1s ease-out 0s,
-    box-shadow 0.15s cubic-bezier(0.47, 0.03, 0.49, 1.38) 0s;
-  border-radius: 3px;
+.col1 {
+  width: 20%;
+  background: #eee;
+  height: 90vh;
+}
+
+.col2 {
+  width: 60%;
+  background: #eee;
+  height: 90vh;
+}
+
+.col3 {
+  width: 20%;
+  background: #eee;
+  height: 90vh;
+}
+
+.col-header {
+  height: 40px;
+  display: flex;
+  vertical-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(182, 182, 182);
 }
 </style>

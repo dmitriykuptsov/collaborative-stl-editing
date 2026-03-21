@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
     is_water_tight BOOLEAN DEFAULT TRUE,
     number_of_facets INT DEFAULT 0,
     number_of_unique_verticies INT DEFAULT 0,
+    number_of_unique_edges INT DEFAULT 0,
     has_zero_area_triangles BOOLEAN DEFAULT FALSE,
     is_edge_manifold BOOLEAN DEFAULT FALSE,
     is_vertex_manifold BOOLEAN DEFAULT FALSE,

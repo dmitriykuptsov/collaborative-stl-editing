@@ -205,7 +205,7 @@ def signin():
     user = Users.query.filter_by(username=data.get("username", None)).first()
         
     if user and user.confirmed and check_password(data.get("password", "").encode("UTF-8"), user.salt.encode("UTF-8"), user.password.encode("UTF-8")):
-        token = encode_jwt(user.username, user.password, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
+        token = encode_jwt(user.username, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
         resp = make_response(jsonify({
             "success": True
         }))

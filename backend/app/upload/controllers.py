@@ -13,9 +13,9 @@ import re
 from datetime import tzinfo, timezone
 from utils.utils import get_subject, is_valid_session
 
-mod_auth = Blueprint('upload', __name__, url_prefix='/upload')
+mod_upload = Blueprint('upload', __name__, url_prefix='/upload')
 
-@mod_auth.route("/create_object_description/", methods=["POST"])
+@mod_upload.route("/create_object_description/", methods=["POST"])
 def create_object_description():
     if not is_valid_session(request, config_):
         return jsonify({
@@ -28,15 +28,15 @@ def create_object_description():
             "success": False
         })
     username = get_subject(request, config_)
-    object = Objects.query.filter_by(Objects.name == data.get("name"), Objects.owner == username).first()
+    object = Objects.query.filter(db.and_(Objects.object == data.get("name"), Objects.owner == username)).first()
     if object:
         return jsonify({
             "success": False,
-            "reason": "Object already exists"
+            "reason": "Объект уже существует"
         })
     
     object = Objects()
-    object.name = data.get("name")
+    object.object = data.get("name")
     object.description = data.get("description")
     object.owner = username
     object.creation_time = datetime.now(tz=timezone.utc)
@@ -48,7 +48,32 @@ def create_object_description():
         "success": True
     })
 
-@mod_auth.route("/update_object_description/", methods=["POST"])
+@mod_upload.route("/get_objects/", methods=["POST"])
+def get_objects():
+    if not is_valid_session(request, config_):
+        return jsonify({
+            "success": False,
+            "auth_fail": True
+        })
+    
+    username = get_subject(request, config_)
+    objects = Objects.query.filter(db.and_(Objects.owner == username)).all()
+
+    result = []
+
+    for _ in objects:
+        result.append({
+            "name": _.object,
+            "creation_date": _.creation_time,
+            "owner": _.owner
+        })
+    
+    return jsonify({
+        "success": True,
+        "result": result
+    })
+
+@mod_upload.route("/update_object_description/", methods=["POST"])
 def update_object_description():
     if not is_valid_session(request, config_):
         return jsonify({
@@ -76,7 +101,7 @@ def update_object_description():
         "success": True
     })
 
-@mod_auth.route("/delete_object_description/", methods=["POST"])
+@mod_upload.route("/delete_object_description/", methods=["POST"])
 def delete_object_description():
     if not is_valid_session(request, config_):
         return jsonify({
@@ -102,7 +127,7 @@ def delete_object_description():
         "success": True
     })
 
-@mod_auth.route("/upload_file/", methods=["POST"])
+@mod_upload.route("/upload_file/", methods=["POST"])
 def upload_file():
     if not is_valid_session(request, config_):
         return jsonify({

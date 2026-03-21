@@ -19,6 +19,10 @@ html,
   background-color: rgb(178, 176, 217) !important;
 }
 
+button {
+  border-radius: 0 !important;
+}
+
 .bi {
   padding: 0 !important;
 }
@@ -140,16 +144,17 @@ html,
 }
 .close,
 .cancel {
-  background-color: #515157;
-  border-color: #515157;
+  background-color: #505050;
+  border-color: #d2d2d2;
   position: absolute;
   bottom: 10px;
   right: 10px;
+  border-radius: 0xp;
 }
 .close:hover,
 .cancel:hover {
-  background-color: #6e6e74;
-  border-color: #6e6e74;
+  background-color: #a5a5a5;
+  border-color: #d2d2d2;
 }
 
 .save,
@@ -158,8 +163,8 @@ html,
 .excel {
   /* background-color: #3d6041; */
   /* border-color: #3d6041; */
-  background-color: #372d69;
-  border-color: #372d69;
+  background-color: #505050;
+  border-color: #d2d2d2;
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -169,8 +174,7 @@ html,
 .confirm:hover,
 .choose:hover,
 .excel:hover {
-  background-color: #4c3f8c;
-  background-color: #4c3f8c;
+  background-color: #a5a5a5;
 }
 
 .cancel {
@@ -210,7 +214,7 @@ html,
 .header {
   height: 30px;
   width: 100%;
-  background-color: #372d69 !important;
+  background-color: #909090 !important;
   color: #ffffff;
   text-align: center;
   font-weight: bold;

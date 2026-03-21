@@ -40,7 +40,10 @@ def index():
 
 # Import a module / component using its blueprint handler variable
 from app.auth.controllers import mod_auth
+from app.upload.controllers import mod_upload
 
 # Register blueprint(s)
 app.register_blueprint(mod_auth)
+app.register_blueprint(mod_upload)
+
 
