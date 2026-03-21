@@ -2,8 +2,8 @@
   <div class="modal-mask">
     <div class="modal-window">
       <div class="header">Сброс пароля</div>
-      <div class="registration-div">
-        <form class="registration-form">
+      <div class="reset-div">
+        <form class="reset-form">
           <div class="form-group">
             <label style="color: white">Имя пользователя или почта</label>
             <div class="input-group input-group-lg">
@@ -112,16 +112,17 @@ export default {
   font-weight: bold;
 }
 
-.registration-div {
+.reset-div {
   border-radius: 10px;
   position: absolute;
-  width: 600px;
-  height: 200px;
+  margin-left: 50px; 
+  width: 500px;
+  height: 100px;
 }
 
-.registration-form {
-  width: 600px;
-  height: 200px;
+.reset-form {
+  width: 500px;
+  height: 100px;
   background-color: rgb(205, 203, 235) !important;
   border-radius: 10px;
   margin: 0;

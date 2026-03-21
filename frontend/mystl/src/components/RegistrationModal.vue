@@ -288,10 +288,10 @@ export default {
   border-radius: 10px;
   position: fixed;
   width: 600px;
-  height: 800px;
+  height: 900px;
   top: 200px;
   left: calc(50% - 100px);
-  margin-top: -100px;
+  margin-top: -150px;
   margin-left: -200px;
   z-index: 1000095;
 }
@@ -308,12 +308,13 @@ export default {
 .registration-div {
   border-radius: 10px;
   position: absolute;
-  width: 600px;
-  height: 860px;
+  margin-left: 50px;
+  width: 500px;
+  height: 900px;
 }
 
 .registration-form {
-  width: 600px;
+  width: 500px;
   height: 800px;
   background-color: rgb(205, 203, 235) !important;
   border-radius: 10px;
