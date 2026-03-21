@@ -2,3 +2,4 @@ celery
 trimesh
 redis 
 numpy
+sqlalchemy
