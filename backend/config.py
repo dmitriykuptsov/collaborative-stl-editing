@@ -17,21 +17,11 @@ DATABASE_CONNECT_OPTIONS = {}
 # operations using the other.
 THREADS_PER_PAGE = 10
 
-# Enable protection agains *Cross-site Request Forgery (CSRF)*
-CSRF_ENABLED     = True
-
-# Use a secure, unique and absolutely secret key for
-# signing the data.
-CSRF_SESSION_KEY = "kamnakosyonBaljIpMishlanUnEvosbo"
-
-# Secret key for signing cookies
-SECRET_KEY = "ew0BlawpAcyajNirshesUvonViUjEbs1"
-
 # Token key
-TOKEN_KEY = "OogyejIvumNasAdUbBishkOudGajnicPiWrymagAbthucradocviOrmosOvDerow"
+TOKEN_KEY = "QuevUvRopyenFeorpOnholAvcyt6FraresHijWufonPomefvettyaiwicyaddAufanBeedCydTygecMyimtoigqueebimBobEjkeffyeMeysajNucfusartonhonQueet"
 
 # Server nonce
-SERVER_NONCE = "RabroyllIjhywofuckcorwojnamvowAg"
+SERVER_NONCE = "neWaddErsOtvukIjKokOicpagewtIvwawmanCejmywoswokAirejuvdivVopFeOdogyaitvoybJucyosJeogsefIkTyWimniltIbUvduOtjeujveswelOnAbnigTipDir"
 
 # Validity of the token in days
 JWT_VALIDITY_IN_DAYS = 30
