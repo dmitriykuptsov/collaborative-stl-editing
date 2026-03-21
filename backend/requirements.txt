@@ -1,0 +1,6 @@
+flask
+pyjwt
+flask-sqlalchemy
+flask-cors
+mysqlclient
+pycryptodome
