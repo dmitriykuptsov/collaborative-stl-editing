@@ -50,7 +50,7 @@ class ConfirmationTokens(db.Model):
     __tablename__  = "ConfirmationTokens"
 
     username       = db.Column(db.String(100), nullable=False, primary_key=True)
-    token          = db.Column(db.String(100), nullable=False)
+    token          = db.Column(db.String(100), nullable=False, primary_key=True)
     exp            = db.Column(db.Integer, default=0)
 
 class Objects(db.Model):

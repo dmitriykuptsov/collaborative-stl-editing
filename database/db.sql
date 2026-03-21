@@ -50,9 +50,10 @@ CREATE TABLE IF NOT EXISTS TwoFactorAuthentication (
 );
 
 CREATE TABLE IF NOT EXISTS ConfirmationTokens (
-    username VARCHAR(100) NOT NULL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
     token VARCHAR(100) NOT NULL,
     exp INT DEFAULT 0,
+    PRIMARY KEY(username, token),
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
