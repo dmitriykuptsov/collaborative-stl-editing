@@ -82,7 +82,7 @@ class ObjectVersions(db.Model):
     is_vertex_manifold         = db.Column(db.Boolean)
 
 
-class Objects(db.Model):
+class Colors(db.Model):
     __tablename__  = "Colors"
     
     color          = db.Column(db.String(100), nullable=False, primary_key=True)
