@@ -1,39 +1,41 @@
 <template>
   <div class="form-group" style="margin-top: 100px">
-    <p class="alert alert-success" style="text-align: center">
-      Введите новый пароль и сохраните!
-    </p>
-    <br>
-    <div class="input-group input-group-lg">
-      <div class="input-group-addon">
+    <div style="width: 20%; margin-left: calc(40%);">
+      <p class="alert alert-success" style="text-align: center">
+        Введите новый пароль и сохраните!
+      </p>
+      <br>
+      <div class="input-group input-group-lg">
+        <div class="input-group-addon">
+        </div>
+        <input
+          type="password"
+          class="form-control form-control-lg"
+          v-model="password"
+        />
       </div>
-      <input
-        type="password"
-        class="form-control form-control-lg"
-        v-model="password"
-      />
-    </div>
-    <br>
-    <button
-      @click="confirm"
-      class="btn btn-light btn-small btn-block btn-confirm"
-    >
-      Сохранить
-    </button>
-    <div class="form-group" v-if="confirmed" style="margin-top: 10px">
-      <div class="alert alert-success" role="alert">
-        Пароль изменен. Вы будете перенаправлены на страницу входа через 3
-        секунды
+      <br>
+      <button
+        @click="confirm"
+        class="btn btn-light btn-small btn-block btn-confirm"
+      >
+        Сохранить
+      </button>
+      <div class="form-group" v-if="confirmed" style="margin-top: 10px">
+        <div class="alert alert-success" role="alert">
+          Пароль изменен. Вы будете перенаправлены на страницу входа через 3
+          секунды
+        </div>
       </div>
-    </div>
 
-    <div
-      v-if="error"
-      class="alert alert-danger"
-      role="alert"
-      style="margin-top: 10px; text-align: center"
-    >
-      {{ error_msg }}
+      <div
+        v-if="error"
+        class="alert alert-danger"
+        role="alert"
+        style="margin-top: 10px; text-align: center"
+      >
+        {{ error_msg }}
+      </div>
     </div>
   </div>
 </template>

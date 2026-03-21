@@ -1,28 +1,30 @@
 <template>
   <div class="form-group" style="margin-top: 100px">
-    <p class="alert alert-success" style="text-align: center">
-      Нажмите кнопку подтвердить для завершения верификации!
-    </p>
-    <button
-      @click="confirm"
-      class="btn btn-light btn-small btn-block btn-confirm"
-    >
-      Подтвердить
-    </button>
-    <div class="form-group" v-if="confirmed" style="margin-top: 10px">
-      <div class="alert alert-success" role="alert">
-        Учетная запись подтверждена. Вы будете перенаправлены на страницу входа
-        через 3 секунды
+    <div style="width: 20%; margin-left: calc(40%);">
+      <p class="alert alert-success" style="text-align: center">
+        Нажмите кнопку подтвердить для завершения верификации!
+      </p>
+      <button
+        @click="confirm"
+        class="btn btn-light btn-small btn-block btn-confirm"
+      >
+        Подтвердить
+      </button>
+      <div class="form-group" v-if="confirmed" style="margin-top: 10px">
+        <div class="alert alert-success" role="alert">
+          Учетная запись подтверждена. Вы будете перенаправлены на страницу входа
+          через 3 секунды
+        </div>
       </div>
-    </div>
 
-    <div
-      v-if="error"
-      class="alert alert-danger"
-      role="alert"
-      style="margin-top: 10px; text-align: center"
-    >
-      {{ error_msg }}
+      <div
+        v-if="error"
+        class="alert alert-danger"
+        role="alert"
+        style="margin-top: 10px; text-align: center"
+      >
+        {{ error_msg }}
+      </div>
     </div>
   </div>
 </template>
