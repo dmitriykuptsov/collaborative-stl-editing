@@ -50,6 +50,7 @@ def process_stl(self, file_path, object, version, owner):
         obj.bb_z_h  = bbox[5]
         obj.is_water_tight = is_watertight
         obj.number_of_facets = num_facets
+        obj.number_of_unique_edges = edges
         obj.number_of_unique_verticies = unique_vertices
         obj.is_edge_manifold = is_edge_manifold
         obj.is_vertex_manifold = is_vertex_manifold
