@@ -85,7 +85,18 @@ def register():
             "reason": "Неверный формат почтового индекса"
         })
     salt = str(hexlify(os.urandom(32)))
-    user = Users.query.filter_by(username=data.get("username", None)).first()
+    if not username:
+        return jsonify({
+            "success": False,
+            "reason": "Неверное имя пользователя"
+        })
+    user = Users.query.filter_by(username=username).first()
+    if user:
+        return jsonify({
+            "success": False,
+            "reason": "Пользователь уже существует"
+        })
+    user = Users.query.filter_by(email=email).first()
     if user:
         return jsonify({
             "success": False,
