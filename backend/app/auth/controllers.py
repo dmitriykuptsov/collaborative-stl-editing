@@ -331,7 +331,7 @@ def renew_token():
             resp = make_response(jsonify({
                 "success": True
             }))
-            resp.set_cookie('token', token, max_age=24*60*60, httponly=True, secure=False, samesite='Lax')
+            resp.set_cookie('token', token, max_age=24*60*60, httponly=True, secure=False, samesite='Lax', domain="localhost")
         else:
             return jsonify({
                 "success": True
