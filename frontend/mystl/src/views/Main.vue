@@ -23,7 +23,7 @@
         <div class="col-header">
           Проекты
         </div>
-        <div v-for="_ in objects" v-bind:key="_.name" class="project">
+        <div v-for="_ in objects" v-bind:key="_.name" class="project" @click="changeProject(_.name)">
           <div style="font-weight: bolder;">Проект: {{_.name}}</div> 
           Дата создания: <span class="badge bg-danger">{{_.creation_date}}</span>
         </div>
@@ -35,8 +35,38 @@
       </div>
       <div class="col3">
         <div class="col-header">
-          Версии
+          Версии и свойства
         </div>
+        <div>
+          <input type="file" @change="handleFile" ref="fileInput" hidden/>
+          <button @click="upload" class="btn btn-dark btn-lg btn-block upload">Загрузить</button>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Свойство</th>
+              <th>Значение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Версия</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Oбъем</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Площадь</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Герметичный</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -56,10 +86,34 @@ export default {
       isAuthenticated: true,
       loaded: false,
       menuItemsActive: {},
-      objects: []
+      objects: [],
+      selectedProject: ""
     };
   },
   methods: {
+    changeProject(object) {
+      this.selectedProject = object;
+    },
+    handleFile(e) {
+      this.file = e.target.files[0]
+      const formData = new FormData()
+      formData.append("model", this.file)
+      formData.append("name", this.selectedProject)
+      const url = this.$BASE_URL + "/upload/upload_file/";
+      axios.post(url, formData).then((response) => {
+        this.loaded = true;
+        if (!response.data.auth_fail) {
+          this.isAuthenticated = true;
+        } else {
+          this.isAuthenticated = false;
+          this.$router.push("/login/");
+        }
+      });
+      this.$refs.fileInput.value = null;
+    },
+    upload() {
+      this.$refs.fileInput.click()
+    },
     closeCreateObject() {
       this.showCreateObject = false;
       this.getObjects();

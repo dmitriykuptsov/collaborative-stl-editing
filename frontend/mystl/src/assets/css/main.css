@@ -157,6 +157,16 @@ button {
   border-color: #d2d2d2;
 }
 
+.upload {
+  background-color: #505050;
+  border-color: #d2d2d2;
+  width: 100%;
+}
+
+.upload:hover {
+  background-color: #a5a5a5;
+}
+
 .save,
 .confirm,
 .choose,

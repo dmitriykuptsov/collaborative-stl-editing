@@ -32,3 +32,5 @@ EMAIL_PASSWORD = "your_app_password"
 EMAIL_CONFIRMATION_LINK = "http://localhost:8080/confirm_email/?token=#token&username=#username"
 
 PASSWORD_RESET_LINK = "http://localhost:8080/password_reset/?token=#token&username=#username"
+
+FILE_STORAGE = "/Users/dmitriykuptsov/workspace/collaborative-stl-editing/storage/"

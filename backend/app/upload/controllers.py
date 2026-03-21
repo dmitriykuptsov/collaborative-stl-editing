@@ -7,11 +7,12 @@ from app import db
 from app import config_
 from models.models import Users
 from models.models import Objects
+from models.models import ObjectVersions
 from datetime import datetime
 import secrets
 import re
 from datetime import tzinfo, timezone
-from utils.utils import get_subject, is_valid_session
+from utils.utils import get_subject, is_valid_session, hash_string
 
 mod_upload = Blueprint('upload', __name__, url_prefix='/upload')
 
@@ -134,18 +135,43 @@ def upload_file():
             "success": False,
             "auth_fail": True
         })
-    data = request.get_json(force=True)
-    if not data:
-        return jsonify({
-            "success": False
-        })
     
     if not request.files["model"]:
         return jsonify({
             "success": False,
-            "reason": "File not found"
+            "reason": "Файл не найден"
         })
     
+    object = request.form.get("name")
+    username = get_subject(request, config_)
+    object = Objects.query.filter(db.and_(Objects.object == object, Objects.owner == username)).first()
+
+    if not object:
+        return jsonify({
+            "success": False,
+            "reason": "Объект не существует"
+        })
+    
+    object_version = ObjectVersions.query.filter(db.and_(ObjectVersions.object == object.object, ObjectVersions.owner == username)).order_by(ObjectVersions.version.desc()).first()
+    if not object_version:
+        version = 1
+    else:
+        version = object_version.version + 1
+    
+    file_name = hash_string(object.object + str(version))
+    file = request.files["model"]
+    file.save(f"{config_["FILE_STORAGE"]}{file_name}.stl")
+    
+    object_version = ObjectVersions()
+    object_version.hash = file_name
+    object_version.version = version
+    object_version.owner = username
+    object_version.date_uploaded = datetime.now(tz=timezone.utc)
+    object_version.object = object.object
+
+    db.session.add(object_version)
+    db.session.commit()
+
     return jsonify({
         "success": True
     })
