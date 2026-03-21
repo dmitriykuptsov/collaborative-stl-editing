@@ -84,7 +84,7 @@ def register():
             "success": False,
             "reason": "Неверный формат почтового индекса"
         })
-    salt = str(hexlify(os.urandom(32)))
+    salt = hexlify(os.urandom(32)).decode("UTF-8")
     if not username:
         return jsonify({
             "success": False,
@@ -135,11 +135,11 @@ def register():
     token_exp = now + timedelta(days=1)
 
     confirmation = ConfirmationTokens()
-    confirmation.token = str(hexlify(os.urandom(32)))
+    confirmation.token = hexlify(os.urandom(32)).decode("UTF-8")
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
 
-    #send_account_confirmation(user.email, confirmation.token)
+    #send_account_confirmation(username, user.email, confirmation.token)
 
     db.session.add(confirmation)
 
@@ -149,12 +149,16 @@ def register():
             "reason": "Код подтверждения был отправлен на электронную почту"
         })
 
-@mod_auth.route("/confirm_email/", methods=["GET"])
+@mod_auth.route("/confirm_email/", methods=["POST"])
 def confirm_email():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
     
-    username = request.args.get("username", None)
-    token = request.args.get("token", None)
-
+    username = data.get("username", None)
+    token = data.get("token", None)
     confirmation = ConfirmationTokens.query.filter_by(username=username, token=token).first()
     if not confirmation:
         return jsonify({
@@ -204,7 +208,8 @@ def signin():
         resp = make_response(jsonify({
             "success": True
         }))
-        resp.set_cookie('token', token, max_age=365*24*60*60, httponly=True, secure=False, samesite='Lax')
+        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='None')
+        #resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False)
         return resp
     else:
         return jsonify({
@@ -232,10 +237,10 @@ def reset_password_request():
     now = datetime.now()
     token_exp = now + timedelta(days=1)
     confirmation = ConfirmationTokens()
-    confirmation.token = str(hexlify(os.urandom(32)))
+    confirmation.token = hexlify(os.urandom(32)).decode("UTF-8")
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
-    send_password_reset_confirmation(user.email, confirmation.token)
+    send_password_reset_confirmation(username, user.email, confirmation.token)
     db.session.add(confirmation)
     db.session.commit()
     return jsonify({

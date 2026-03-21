@@ -8,7 +8,10 @@
         превращается в физический объект
       </h3>
     </div>
-    <RegistrationModalVue v-if="showRegistrationModal" v-on:close="closeRegistrationModal" />
+    <RegistrationModalVue
+      v-if="showRegistrationModal"
+      v-on:close="closeRegistrationModal"
+    />
     <div class="login-div">
       <form class="login-form">
         <div class="form-group">
@@ -94,7 +97,7 @@
 
 <script>
 import axios from "axios";
-import RegistrationModalVue from '../components/RegistrationModal.vue';
+import RegistrationModalVue from "../components/RegistrationModal.vue";
 
 export default {
   name: "AuthLogin",
@@ -105,7 +108,6 @@ export default {
       failed: false,
       registered: false,
       showRegistrationModal: false,
-
     };
   },
   methods: {
@@ -127,9 +129,10 @@ export default {
         .then((response) => {
           if (response.data.success) {
             this.$parent.isAuthenticated = true;
-            this.$router.push("/main/");
+            this.$router.push("/main");
+          } else {
+            this.failed = !response.data.success;
           }
-          this.failed = !response.data.success;
         });
       e.preventDefault();
     },

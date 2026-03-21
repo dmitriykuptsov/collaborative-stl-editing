@@ -100,7 +100,6 @@
             </div>
             <label style="color: white">Страна</label>
             <div class="input-group input-group-lg">
-              
               <select
                 class="form-select form-control-lg"
                 v-model="country"
@@ -118,7 +117,6 @@
             </div>
             <label style="color: white">Город</label>
             <div class="input-group input-group-lg">
-              
               <select
                 class="form-select form-control-lg"
                 v-model="city"
@@ -188,12 +186,16 @@ export default {
       city: "",
       postal_code: "",
       password: "",
-      failed: false
+      failed: false,
     };
   },
   methods: {
     verifyEmail() {
-      if (!RegExp("[a-zA-Z.0-9_-]+@[a-zA-Z0-9]+.[a-zA-Z0-9]{2,5}").exec(this.email)) {
+      if (
+        !RegExp("[a-zA-Z.0-9_-]+@[a-zA-Z0-9]+.[a-zA-Z0-9]{2,5}").exec(
+          this.email
+        )
+      ) {
         this.failed = true;
         this.error = "Неверный адрес электронной почты";
       } else {
@@ -246,7 +248,7 @@ export default {
         postal_code: this.postal_code,
         city_code: this.city,
         country_code: this.country,
-        password: this.password
+        password: this.password,
       };
       const headers = {
         "Content-Type": "application/json",
@@ -258,7 +260,7 @@ export default {
             this.$emit("close", {});
           }
           this.failed = true;
-          this.error = response.data.reason; 
+          this.error = response.data.reason;
         });
       e.preventDefault();
     },
@@ -294,7 +296,6 @@ export default {
   z-index: 1000095;
 }
 
-
 .header {
   border-radius: 10px;
   height: 30px;
@@ -310,7 +311,6 @@ export default {
   width: 600px;
   height: 860px;
 }
-
 
 .registration-form {
   width: 600px;

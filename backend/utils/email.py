@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 from config import EMAIL_ADDRESS, EMAIL_PASSWORD, EMAIL_CONFIRMATION_LINK, PASSWORD_RESET_LINK
 
-def send_account_confirmation(recipient, token):
+def send_account_confirmation(username, recipient, token):
     msg = EmailMessage()
     msg["Subject"] = "Подтверждение аккаунта SolidEngineering"
     msg["From"] = EMAIL_ADDRESS
@@ -30,7 +30,7 @@ def send_account_confirmation(recipient, token):
         <p>Спасибо за регестрацию на сайте Solid-Engineering.strangebit.io! Пожалуйста подтвердите ваш адрес электронной почты:</p>
 
         <div style="text-align:center;margin:30px 0;">
-          <a href="{EMAIL_CONFIRMATION_LINK.replace("#token", token)}" style="
+          <a href="{EMAIL_CONFIRMATION_LINK.replace("#token", token).replace("#username", username)}" style="
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
             padding: 14px 28px;
@@ -44,7 +44,7 @@ def send_account_confirmation(recipient, token):
         </div>
 
         <p>Если кнопка не работает, пожалуйста, используйте ссылку:</p>
-        <p style="word-break:break-all;color:#4f46e5;">{EMAIL_CONFIRMATION_LINK.replace("#token", token)}</p>
+        <p style="word-break:break-all;color:#4f46e5;">{EMAIL_CONFIRMATION_LINK.replace("#token", token).replace("#username", username)}</p>
 
         <p style="color:#666;">Ссылка действует 24 часа.</p>
 
@@ -65,7 +65,7 @@ def send_account_confirmation(recipient, token):
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
-def send_password_reset_confirmation(recipient, token):
+def send_password_reset_confirmation(username, recipient, token):
     msg = EmailMessage()
     msg["Subject"] = "Подтверждение аккаунта SolidEngineering"
     msg["From"] = EMAIL_ADDRESS
@@ -93,7 +93,7 @@ def send_password_reset_confirmation(recipient, token):
         <p>Вы запросили сброс пароля для сервиса SolidEngineering. Пожалуйста подтвердите ваш адрес электронной почты:</p>
 
         <div style="text-align:center;margin:30px 0;">
-          <a href="{PASSWORD_RESET_LINK.replace("#token", token)}" style="
+          <a href="{PASSWORD_RESET_LINK.replace("#token", token).replace("#username", username)}" style="
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
             padding: 14px 28px;
@@ -107,7 +107,7 @@ def send_password_reset_confirmation(recipient, token):
         </div>
 
         <p>Если кнопка не работает, пожалуйста, используйте ссылку:</p>
-        <p style="word-break:break-all;color:#4f46e5;">{PASSWORD_RESET_LINK.replace("#token", token)}</p>
+        <p style="word-break:break-all;color:#4f46e5;">{PASSWORD_RESET_LINK.replace("#token", token).replace("#username", username)}</p>
 
         <p style="color:#666;">Ссылка действует 24 часа.</p>
 

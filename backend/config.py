@@ -39,6 +39,6 @@ JWT_VALIDITY_IN_DAYS = 30
 EMAIL_ADDRESS = "dmitriy.kuptsov@gmail.com"
 EMAIL_PASSWORD = "your_app_password"
 #EMAIL_CONFIRMATION_LINK = "https://solid-engineering.strangebit.io/confirm/"
-EMAIL_CONFIRMATION_LINK = "http://localhost:8080/confirm_email/?token=#token"
+EMAIL_CONFIRMATION_LINK = "http://localhost:8080/confirm_email/?token=#token&username=#username"
 
-PASSWORD_RESET_LINK = "http://localhost:8080/password_reset/?token=#token"
+PASSWORD_RESET_LINK = "http://localhost:8080/password_reset/?token=#token&username=#username"
