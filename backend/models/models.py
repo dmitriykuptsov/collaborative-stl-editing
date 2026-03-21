@@ -65,8 +65,8 @@ class ObjectVersions(db.Model):
     __tablename__  = "ObjectVersions"
 
     object                     = db.Column(db.String(400), nullable=False, primary_key=True)
-    version                    = db.Column(db.Integer, nullable=False)
-    owner                      = db.Column(db.String(100), nullable=False)
+    version                    = db.Column(db.Integer, nullable=False, primary_key=True)
+    owner                      = db.Column(db.String(100), nullable=False, primary_key=True)
     hash                       = db.Column(db.String(200), nullable=False)
     date_uploaded              = db.Column(db.Date, nullable=False)
     surface_area               = db.Column(db.Float(10, 10))
