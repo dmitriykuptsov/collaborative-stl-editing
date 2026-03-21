@@ -65,6 +65,18 @@
               <td>Герметичный</td>
               <td></td>
             </tr>
+            <tr>
+              <td>Ширина</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Высота</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Длина</td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
       </div>
