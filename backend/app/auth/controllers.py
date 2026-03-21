@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import secrets
 import re
 from utils.utils import check_password, encode_jwt, is_valid_auth_token, get_auth_token, decode_jwt, hash_password
-from utils.email import send_account_confirmation, send_password_reset_confirmation_password
+from utils.email import send_account_confirmation, send_password_reset_confirmation
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -223,7 +223,7 @@ def reset_password_request():
     confirmation.token = str(hexlify(os.urandom(32)))
     confirmation.username = username
     confirmation.exp = int(token_exp.timestamp())
-    send_password_reset_confirmation_password(user.email, confirmation.token)
+    send_password_reset_confirmation(user.email, confirmation.token)
     db.session.add(confirmation)
     db.session.commit()
     return jsonify({

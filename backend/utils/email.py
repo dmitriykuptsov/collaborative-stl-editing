@@ -65,7 +65,7 @@ def send_account_confirmation(recipient, token):
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
-def send_password_reset_confirmation_password(recipient, token):
+def send_password_reset_confirmation(recipient, token):
     msg = EmailMessage()
     msg["Subject"] = "Подтверждение аккаунта SolidEngineering"
     msg["From"] = EMAIL_ADDRESS
