@@ -185,6 +185,7 @@ def confirm_email():
             "reason": "Неверный код подтверждения"
         })
     
+    db.session.delete(confirmation)
     user.confirmed = True
     db.session.commit()
 
