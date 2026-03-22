@@ -30,12 +30,12 @@
       </div>
       <div class="col2">
         <div class="col-header">
-          3D вьюер
+          3D вьювер
         </div>
       </div>
       <div class="col3">
         <div class="col-header">
-          Версии и свойства
+          Версии и свойства <b style="margin-left: 10px;">Прокет</b>: <span class="badge bg-danger">{{selectedProject}}</span>
         </div>
         <div>
           <input type="file" @change="handleFile" ref="fileInput" hidden/>
