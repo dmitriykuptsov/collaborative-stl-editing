@@ -1,9 +1,18 @@
-# tasks.py
-from worker import celery
 import trimesh
 import numpy as np
 import os
-from models import session, ObjectVersions
+from models.models import session, ObjectVersions
+
+from celery import Celery
+
+celery = Celery(
+    "tasks",
+    broker="redis://localhost:6379/0"
+)
+
+celery.conf.task_routes = {
+    "tasks.process_stl": {"queue": "stl"},
+}
 
 @celery.task(bind=True, max_retries=3)
 def process_stl(self, file_path, object, version, owner):
@@ -15,9 +24,9 @@ def process_stl(self, file_path, object, version, owner):
         num_facets = len(mesh.faces)
         unique_vertices = mesh.vertices
         edges = mesh.edges_unique
-        counts = mesh.edges_unique_face_count
-        non_manifold_edges = edges[counts != 2]
-        is_edge_manifold = (mesh.edges_unique_face_count == 2).all()
+        #counts = mesh.edges_unique_face_count
+        #non_manifold_edges = edges[counts != 2]
+        #is_edge_manifold = (mesh.edges_unique_face_count == 2).all()
         is_watertight = mesh.is_watertight
         non_manifold_vertices = []
         for v_idx in range(len(mesh.vertices)):
@@ -52,7 +61,7 @@ def process_stl(self, file_path, object, version, owner):
         obj.number_of_facets = num_facets
         obj.number_of_unique_edges = edges
         obj.number_of_unique_verticies = unique_vertices
-        obj.is_edge_manifold = is_edge_manifold
+        #obj.is_edge_manifold = is_edge_manifold
         obj.is_vertex_manifold = is_vertex_manifold
 
         session.commit();

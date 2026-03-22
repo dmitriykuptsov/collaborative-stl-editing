@@ -13,6 +13,7 @@ import secrets
 import re
 from datetime import tzinfo, timezone
 from utils.utils import get_subject, is_valid_session, hash_string
+from workers import stltasks
 
 mod_upload = Blueprint('upload', __name__, url_prefix='/upload')
 
@@ -168,6 +169,8 @@ def upload_file():
     object_version.owner = username
     object_version.date_uploaded = datetime.now(tz=timezone.utc)
     object_version.object = object.object
+
+    stltasks.send_task(f"{config_["FILE_STORAGE"]}{file_name}.stl", object.object, version, username)
 
     db.session.add(object_version)
     db.session.commit()

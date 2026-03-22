@@ -3,3 +3,5 @@ trimesh
 redis 
 numpy
 sqlalchemy
+mysqlclient
+scipy
