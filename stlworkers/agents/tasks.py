@@ -54,13 +54,10 @@ def process_stl(self, file_path, object, version, owner):
         obj.bb_x_l = bbox[0]
         obj.bb_y_l = bbox[1]
         obj.bb_z_l = bbox[2]
-        obj.bb_x_h = bbox[3]
-        obj.bb_y_h = bbox[4]
-        obj.bb_z_h  = bbox[5]
         obj.is_water_tight = is_watertight
         obj.number_of_facets = num_facets
-        obj.number_of_unique_edges = edges
-        obj.number_of_unique_verticies = unique_vertices
+        obj.number_of_unique_edges = len(edges)
+        obj.number_of_unique_verticies = len(unique_vertices)
         #obj.is_edge_manifold = is_edge_manifold
         obj.is_vertex_manifold = is_vertex_manifold
 
