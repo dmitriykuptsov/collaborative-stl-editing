@@ -6,14 +6,14 @@
       style="border-style: none"
     >
       <div class="info">
-        Total number of pages: {{ numPages }} Total number of records:
-        {{ count }} Current page: {{ currentPage }}
+        Всего страниц: {{ numPages }} <br />
+        Общее кол-во записей: {{ count }} <br />
+        Текущая страница: {{ currentPage }} <br />
       </div>
       <button
         @click="prev"
         class="btn btn-dark btn-lg btn-block paginator-btn"
         style="float: left"
-        v-if="showArrows"
       >
         <!-- BootstrapIcon icon="arrow-left" / -->
         &lt;
@@ -32,7 +32,6 @@
         @click="next"
         class="btn btn-dark btn-lg btn-block paginator-btn"
         style="float: left"
-        v-if="showArrows"
       >
         <!-- BootstrapIcon icon="arrow-right" / -->
         &gt;
@@ -168,7 +167,7 @@ export default {
 .container {
   margin: auto;
   width: 820px;
-  height: 30px;
+  height: 20px;
   font-weight: bolder;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   border-style: none !important;
@@ -180,7 +179,7 @@ export default {
 
 .paginator {
   width: calc(100%);
-  height: 30px;
+  height: 20px;
   font-weight: bolder;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   border-style: none !important;
@@ -189,13 +188,14 @@ export default {
 }
 
 .active {
-  background-color: #180e49 !important;
-  color: #fff9a4;
+  background-color: #28262f !important;
+  color: #f22400;
 }
 
 .paginator-btn {
-  background-color: #372d69;
-  width: 60px;
+  background-color: #9b9b9b;
+  width: 40px;
+  height: 40px;
   margin-right: 5px;
   border-style: none !important;
   border-top: none !important;
@@ -208,5 +208,9 @@ export default {
 .add {
   border-top: none !important;
   border-bottom: none !important;
+}
+
+.info {
+  font-size: 10px;
 }
 </style>

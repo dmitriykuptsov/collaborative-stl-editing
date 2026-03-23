@@ -1,6 +1,6 @@
 <template>
   <div class="form-group" style="margin-top: 100px">
-    <div style="width: 20%; margin-left: calc(40%);">
+    <div style="width: 20%; margin-left: calc(40%)">
       <p class="alert alert-success" style="text-align: center">
         Нажмите кнопку подтвердить для завершения верификации!
       </p>
@@ -12,8 +12,8 @@
       </button>
       <div class="form-group" v-if="confirmed" style="margin-top: 10px">
         <div class="alert alert-success" role="alert">
-          Учетная запись подтверждена. Вы будете перенаправлены на страницу входа
-          через 3 секунды
+          Учетная запись подтверждена. Вы будете перенаправлены на страницу
+          входа через 3 секунды
         </div>
       </div>
 

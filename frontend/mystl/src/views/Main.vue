@@ -1,9 +1,6 @@
 <template>
   <div v-if="isAuthenticated">
-    <CreateObject
-      v-if="showCreateObject"
-      v-on:close="closeCreateObject"
-    />
+    <CreateObject v-if="showCreateObject" v-on:close="closeCreateObject" />
     <div class="menu">
       <div class="menu-item" @click="createObject">
         <i class="bi bi-plus fs-4"></i>
@@ -16,30 +13,52 @@
       <div class="menu-item" @click="logout">
         <i class="bi bi-door-open fs-4"></i>
         Выйти
-      </div>      
+      </div>
     </div>
     <div class="container">
       <div class="col1">
-        <div class="col-header">
-          Проекты
-        </div>
-        <div v-for="_ in objects" v-bind:key="_.name" class="project" @click="changeProject(_.name)">
-          <div style="font-weight: bolder;">Проект: {{_.name}}</div> 
-          Дата создания: <span class="badge bg-danger">{{_.creation_date}}</span>
+        <div class="col-header">Проекты</div>
+        <SimplePaginator
+          v-bind:count="totalObjects"
+          v-bind:ipp="ipp"
+          v-bind:currentPage="currentObjectPage"
+          v-on:page-click="changeObjectPage"
+          v-bind:autoMargin="true"
+        />
+        <br />
+        <br />
+        <br />
+        <div
+          v-for="_ in objects"
+          v-bind:key="_.name"
+          class="project"
+          @click="changeProject(_.name)"
+        >
+          <div style="font-weight: bolder">Проект: {{ _.name }}</div>
+          Дата создания:
+          <span class="badge bg-danger">{{ _.creation_date }}</span>
         </div>
       </div>
       <div class="col2">
         <div class="col-header">
-          3D вьювер
+          3D вьювер <b style="margin-left: 10px">Версия</b>:
+          <span class="badge bg-danger">{{ selectedVersion }}</span>
         </div>
+        <StlViewer
+          v-bind:object="selectedProject"
+          v-bind:version="selectedVersion"
+        />
       </div>
       <div class="col3">
         <div class="col-header">
-          Версии и свойства <b style="margin-left: 10px;">Прокет</b>: <span class="badge bg-danger">{{selectedProject}}</span>
+          Версии и свойства <b style="margin-left: 10px">Прокет</b>:
+          <span class="badge bg-danger">{{ selectedProject }}</span>
         </div>
         <div>
-          <input type="file" @change="handleFile" ref="fileInput" hidden/>
-          <button @click="upload" class="btn btn-dark btn-lg btn-block upload">Загрузить</button>
+          <input type="file" @change="handleFile" ref="fileInput" hidden />
+          <button @click="upload" class="btn btn-dark btn-lg btn-block upload">
+            Загрузить
+          </button>
         </div>
         <table class="table table-striped">
           <thead>
@@ -51,34 +70,57 @@
           <tbody>
             <tr>
               <td>Версия</td>
-              <td></td>
+              <td>{{ info.version }}</td>
             </tr>
             <tr>
               <td>Oбъем</td>
-              <td></td>
+              <td>{{ info.volume }}</td>
             </tr>
             <tr>
               <td>Площадь</td>
-              <td></td>
+              <td>{{ info.surface_area }}</td>
             </tr>
             <tr>
               <td>Герметичный</td>
-              <td></td>
+              <td>{{ info.is_water_tight }}</td>
             </tr>
             <tr>
               <td>Ширина</td>
-              <td></td>
+              <td>{{ info.width }}</td>
             </tr>
             <tr>
               <td>Высота</td>
-              <td></td>
+              <td>{{ info.height }}</td>
             </tr>
             <tr>
               <td>Длина</td>
-              <td></td>
+              <td>{{ info.length }}</td>
             </tr>
           </tbody>
         </table>
+        <SimplePaginator
+          v-bind:count="totalVersions"
+          v-bind:ipp="ipp"
+          v-bind:currentPage="currentVersionPage"
+          v-on:page-click="changeVersionPage"
+          v-bind:autoMargin="true"
+        />
+        <br />
+        <br />
+        <br />
+        <div
+          v-for="_ in versions"
+          v-bind:key="_.version"
+          class="versions"
+          @click="changeVersion(_.name, _.version)"
+        >
+          <div style="font-weight: bolder">
+            Объект: {{ _.name }}, Версия: {{ _.version }}
+          </div>
+          Дата создания:
+          <span class="badge bg-danger">{{ _.date_uploaded }}</span> Хеш:
+          {{ _.hash.substring(0, 6) + "..." }}
+        </div>
       </div>
     </div>
   </div>
@@ -86,7 +128,9 @@
 
 <script>
 import axios from "axios";
-import CreateObject from '../components/CreateObject.vue';
+import CreateObject from "../components/CreateObject.vue";
+import SimplePaginator from "../components/SimplePaginator.vue";
+import StlViewer from "../components/StlViewer.vue";
 
 axios.defaults.withCredentials = true;
 
@@ -99,18 +143,50 @@ export default {
       loaded: false,
       menuItemsActive: {},
       objects: [],
-      selectedProject: ""
+      selectedProject: "",
+      selectedVersion: "",
+      versions: [],
+      totalVersions: 0,
+      totalObjects: 0,
+      currentVersionPage: 1,
+      currentObjectPage: 1,
+      ipp: 4,
+      info: {
+        object: "",
+        version: "",
+        surface_area: 0,
+        volume: 0,
+        width: 0,
+        length: 0,
+        height: 0,
+        is_water_tight: false,
+      },
     };
   },
   methods: {
+    changeVersion(object, version) {
+      this.selectedProject = object;
+      this.selectedVersion = version;
+      this.getStlInfo();
+    },
+    changeObjectPage(page) {
+      this.currentObjectPage = page.page;
+      this.getObjects();
+    },
+    changeVersionPage(page) {
+      this.currentVersionPage = page.page;
+      this.getVersions();
+    },
     changeProject(object) {
       this.selectedProject = object;
+      this.getVersionsCount();
+      this.getVersions();
     },
     handleFile(e) {
-      this.file = e.target.files[0]
-      const formData = new FormData()
-      formData.append("model", this.file)
-      formData.append("name", this.selectedProject)
+      this.file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("model", this.file);
+      formData.append("name", this.selectedProject);
       const url = this.$BASE_URL + "/upload/upload_file/";
       axios.post(url, formData).then((response) => {
         this.loaded = true;
@@ -124,7 +200,7 @@ export default {
       this.$refs.fileInput.value = null;
     },
     upload() {
-      this.$refs.fileInput.click()
+      this.$refs.fileInput.click();
     },
     closeCreateObject() {
       this.showCreateObject = false;
@@ -132,24 +208,126 @@ export default {
     },
     createObject(e) {
       this.showCreateObject = true;
-      this.getObjects();
+      this.getObjectsCount();
+
       e.preventDefault();
+    },
+    getStlInfo() {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/get_stl_info/";
+      axios
+        .post(
+          url,
+          {
+            name: this.selectedProject,
+            version: this.selectedVersion,
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (!response.data.auth_fail) {
+            this.isAuthenticated = true;
+            this.info = response.data.result;
+          } else {
+            this.isAuthenticated = false;
+            this.$router.push("/login/");
+          }
+        });
+    },
+    getObjectsCount() {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/get_objects_count/";
+      axios.post(url, {}, { headers }).then((response) => {
+        this.loaded = true;
+        if (!response.data.auth_fail) {
+          this.isAuthenticated = true;
+          this.totalObjects = response.data.result;
+          this.getObjects();
+        } else {
+          this.isAuthenticated = false;
+          this.$router.push("/login/");
+        }
+      });
+    },
+    getVersionsCount() {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/get_versions_count/";
+      axios
+        .post(
+          url,
+          {
+            name: this.selectedProject,
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (!response.data.auth_fail) {
+            this.isAuthenticated = true;
+            this.totalVersions = response.data.result;
+          } else {
+            this.isAuthenticated = false;
+            this.$router.push("/login/");
+          }
+        });
+    },
+    getVersions() {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/get_versions/";
+      axios
+        .post(
+          url,
+          {
+            name: this.selectedProject,
+            limit: 4,
+            offset: this.ipp * (this.currentVersionPage - 1),
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (!response.data.auth_fail) {
+            this.isAuthenticated = true;
+            this.versions = response.data.result;
+          } else {
+            this.isAuthenticated = false;
+            this.$router.push("/login/");
+          }
+        });
     },
     getObjects() {
       const headers = {
         "Content-Type": "application/json",
       };
       const url = this.$BASE_URL + "/upload/get_objects/";
-      axios.post(url, {}, { headers }).then((response) => {
-        this.loaded = true;
-        if (!response.data.auth_fail) {
-          this.isAuthenticated = true;
-          this.objects = response.data.result;
-        } else {
-          this.isAuthenticated = false;
-          this.$router.push("/login/");
-        }
-      });
+      axios
+        .post(
+          url,
+          {
+            limit: 10,
+            offset: this.ipp * (this.currentObjectPage - 1),
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (!response.data.auth_fail) {
+            this.isAuthenticated = true;
+            this.objects = response.data.result;
+          } else {
+            this.isAuthenticated = false;
+            this.$router.push("/login/");
+          }
+        });
     },
     checkAuth() {
       const headers = {
@@ -200,10 +378,13 @@ export default {
     this.checkAuth();
     this.pollAuthData();
     this.pollRenewToken();
-    this.getObjects();
+    this.getObjectsCount();
+    //this.getObjects();
   },
   components: {
     CreateObject,
+    SimplePaginator,
+    StlViewer,
   },
 };
 </script>
@@ -241,6 +422,18 @@ export default {
 }
 
 .project:hover {
+  cursor: pointer;
+  background-color: rgb(73, 73, 73);
+  margin: 10px;
+}
+
+.versions {
+  cursor: pointer;
+  background-color: rgb(152, 152, 152);
+  margin: 10px;
+}
+
+.versions:hover {
   cursor: pointer;
   background-color: rgb(73, 73, 73);
   margin: 10px;

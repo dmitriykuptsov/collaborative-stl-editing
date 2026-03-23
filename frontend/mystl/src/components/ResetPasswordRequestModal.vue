@@ -115,7 +115,7 @@ export default {
 .reset-div {
   border-radius: 10px;
   position: absolute;
-  margin-left: 50px; 
+  margin-left: 50px;
   width: 500px;
   height: 100px;
 }

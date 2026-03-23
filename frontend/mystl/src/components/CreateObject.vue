@@ -23,7 +23,7 @@
             </div>
             <div class="form-group" v-if="failed" style="margin-top: 10px">
               <div class="alert alert-danger" role="alert">
-                {{error}}
+                {{ error }}
               </div>
             </div>
           </div>
@@ -48,10 +48,10 @@ export default {
   props: [],
   data() {
     return {
-        name: "",
-        description: "",
-        failed: false,
-        error: ""
+      name: "",
+      description: "",
+      failed: false,
+      error: "",
     };
   },
   methods: {
@@ -60,21 +60,27 @@ export default {
         "Content-Type": "application/json",
       };
       const url = this.$BASE_URL + "/upload/create_object_description/";
-      axios.post(url, {
-        name: this.name,
-        description: this.description
-      }, { headers }).then((response) => {
-        this.loaded = true;
-        if (response.data.success) {
+      axios
+        .post(
+          url,
+          {
+            name: this.name,
+            description: this.description,
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (response.data.success) {
             cb();
-        } else {
+          } else {
             this.failed = true;
             this.error = response.data.reason;
-        }
-      });
+          }
+        });
     },
     confirm() {
-      this.create(this.cancel)
+      this.create(this.cancel);
     },
     cancel() {
       this.$emit("close", {});

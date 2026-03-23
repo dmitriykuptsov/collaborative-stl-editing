@@ -1,20 +1,19 @@
 <template>
   <div class="form-group" style="margin-top: 100px">
-    <div style="width: 20%; margin-left: calc(40%);">
+    <div style="width: 20%; margin-left: calc(40%)">
       <p class="alert alert-success" style="text-align: center">
         Введите новый пароль и сохраните!
       </p>
-      <br>
+      <br />
       <div class="input-group input-group-lg">
-        <div class="input-group-addon">
-        </div>
+        <div class="input-group-addon"></div>
         <input
           type="password"
           class="form-control form-control-lg"
           v-model="password"
         />
       </div>
-      <br>
+      <br />
       <button
         @click="confirm"
         class="btn btn-light btn-small btn-block btn-confirm"
@@ -50,7 +49,7 @@ export default {
       confirmed: false,
       error: false,
       error_msg: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
@@ -65,7 +64,7 @@ export default {
           {
             username: this.$route.query.username,
             token: this.$route.query.token,
-            password: this.password
+            password: this.password,
           },
           { headers },
         )
