@@ -313,7 +313,7 @@ export default {
         .post(
           url,
           {
-            limit: 10,
+            limit: 4,
             offset: this.ipp * (this.currentObjectPage - 1),
           },
           { headers },
