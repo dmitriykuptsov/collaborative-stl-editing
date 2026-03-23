@@ -1,5 +1,5 @@
 [Unit]
-Description=MySTL web application
+Description=MySTL Agent application
 After=network.target
 StartLimitIntervalSec=0
 
@@ -9,8 +9,8 @@ Restart=always
 RestartSec=1
 User=www-data
 
-WorkingDirectory=/opt/mystl/
-ExecStart=bash /opt/mystl/run.sh
+WorkingDirectory=/opt/mystl-agent/
+ExecStart=bash /opt/mystl-agent/run.sh
 
 [Install]
 WantedBy=multi-user.target
