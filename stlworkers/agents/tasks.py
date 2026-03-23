@@ -3,6 +3,8 @@ import numpy as np
 import os
 from models.models import session, ObjectVersions
 
+from datetime import datetime, timedelta
+
 from celery import Celery
 
 celery = Celery(
@@ -60,6 +62,7 @@ def process_stl(self, file_path, object, version, owner):
         obj.number_of_unique_verticies = len(unique_vertices)
         #obj.is_edge_manifold = is_edge_manifold
         obj.is_vertex_manifold = is_vertex_manifold
+        obj.date_uploaded = datetime.now();
 
         session.commit();
     
