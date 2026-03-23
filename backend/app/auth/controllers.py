@@ -17,6 +17,8 @@ from utils.email import send_account_confirmation, send_password_reset_confirmat
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
+domain = "localhost"
+
 @mod_auth.route("/get_contries/", methods=["POST"])
 def get_contries():
     countries = Countries.query.all()
@@ -209,7 +211,7 @@ def signin():
         resp = make_response(jsonify({
             "success": True
         }))
-        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax', domain="localhost")
+        resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False, samesite='Lax', domain=domain)
         #resp.set_cookie('token', token, max_age=30*24*60*60, httponly=True, secure=False)
         return resp
     else:
@@ -305,7 +307,7 @@ def logout():
     resp = make_response(jsonify({
         "success": True
     }))
-    resp.set_cookie('token', "", max_age=0)
+    resp.set_cookie('token', "", max_age=0, httponly=True, secure=False, samesite='Lax', domain=domain)
     return resp
 
 @mod_auth.route("/validate_token/", methods=["POST"])
@@ -331,7 +333,7 @@ def renew_token():
             resp = make_response(jsonify({
                 "success": True
             }))
-            resp.set_cookie('token', token, max_age=24*60*60, httponly=True, secure=False, samesite='Lax', domain="localhost")
+            resp.set_cookie('token', token, max_age=24*60*60, httponly=True, secure=False, samesite='Lax', domain=domain)
         else:
             return jsonify({
                 "success": True
