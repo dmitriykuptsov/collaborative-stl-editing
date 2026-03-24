@@ -7,6 +7,7 @@ import * as THREE from "three";
 import axios from "axios";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 export default {
   name: "StlViewer",
@@ -49,6 +50,9 @@ export default {
       this.$refs.container.replaceChildren();
       this.$refs.container.appendChild(renderer.domElement);
       const controls = new OrbitControls(camera, renderer.domElement);
+
+      const transform = new TransformControls(camera, renderer.domElement);
+
 
       // Light
       const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -102,12 +106,17 @@ export default {
 
           scene.add(mesh);
 
-          
+          camera.add(light);
+          scene.add(camera);
+
+          transform.attach(mesh);
+          scene.add(transform);
 
           // Render loop
           function animate() {
             requestAnimationFrame(animate);
             controls.update();
+            light.position.copy(camera.position);
             renderer.render(scene, camera);
           }
 

@@ -10,6 +10,10 @@
         <i class="bi bi-file fs-4"></i>
         Настройки
       </div>
+      <div class="menu-item">
+        <i class="bi bi-gem fs-4"></i>
+        Заказы
+      </div>
       <div class="menu-item" @click="logout">
         <i class="bi bi-door-open fs-4"></i>
         Выйти
