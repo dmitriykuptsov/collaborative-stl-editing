@@ -176,7 +176,7 @@ export default {
       this.showSpinner = false;
     },
     changeVersion(object, version) {
-      if (this.selectedVersion != version && this.selectedProject != object) {
+      if (this.selectedVersion != version || this.selectedProject != object) {
         this.showSpinner = true;
       }
       this.selectedProject = object;
