@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS ResetPasswordTokens (
     username VARCHAR(100) NOT NULL,
     token VARCHAR(100) NOT NULL,
     exp INT DEFAULT 0,
+    PRIMARY KEY(username, token),
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
@@ -104,13 +105,17 @@ CREATE TABLE IF NOT EXISTS ObjectVersions (
 );
 
 CREATE TABLE IF NOT EXISTS Colors (
-    color VARCHAR(100) NOT NULL PRIMARY KEY
+    color VARCHAR(100) NOT NULL PRIMARY KEY,
+    code VARCHAR(20) NOT NULL,
+    description VARCHAR(100)
 );
 
+INSERT INTO Colors(description, color, code) VALUES('Белый', 'white', '#ffffff');
+INSERT INTO Colors(description, color, code) VALUES('Черный', 'black', '#000000');
 
 CREATE TABLE IF NOT EXISTS Materials (
     material VARCHAR(100) NOT NULL,
-    type_code INT NOT NULL,
+    type_code VARCHAR(20) NOT NULL,
     color VARCHAR(100) NOT NULL,
     price_per_cubic_cm FLOAT,
     PRIMARY KEY(material, color),
@@ -118,6 +123,8 @@ CREATE TABLE IF NOT EXISTS Materials (
     ON DELETE CASCADE
 );
 
+INSERT INTO Materials(material, type_code, color, price_per_cubic_cm) VALUES('Standard Resin', 'SR_W', 'white', 1000);
+INSERT INTO Materials(material, type_code, color, price_per_cubic_cm) VALUES('Standard Resin', 'SR_B', 'black', 1000);
 
 CREATE TABLE IF NOT EXISTS Machinery (
     machine VARCHAR(100) NOT NULL,
@@ -130,6 +137,9 @@ CREATE TABLE IF NOT EXISTS Machinery (
     FOREIGN KEY (material, color) REFERENCES Materials(material, color)
     ON DELETE CASCADE
 );
+
+INSERT INTO Machinery(machine, dimension_x, dimension_y, dimension_z, material, color) VALUES('Formlabs Form 4', 30, 30, 30, 'Standard Resin', 'white');
+INSERT INTO Machinery(machine, dimension_x, dimension_y, dimension_z, material, color) VALUES('Formlabs Form 4', 30, 30, 30, 'Standard Resin', 'black');
 
 CREATE TABLE IF NOT EXISTS Providers (
     provider VARCHAR(400) NOT NULL PRIMARY KEY,
@@ -149,6 +159,10 @@ CREATE TABLE IF NOT EXISTS ProvidersMachinery (
 CREATE TABLE IF NOT EXISTS OrderStatus (
     status VARCHAR(100) NOT NULL PRIMARY KEY
 );
+
+INSERT INTO OrderStatus VALUES('В ожидании');
+INSERT INTO OrderStatus VALUES('В печати');
+INSERT INTO OrderStatus VALUES('Готов');
 
 CREATE TABLE IF NOT EXISTS Orders (
     order_number VARCHAR(100) NOT NULL PRIMARY KEY,
