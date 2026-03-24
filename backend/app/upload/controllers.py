@@ -231,9 +231,9 @@ def get_stl_info():
                 "version": object.version,
                 "surface_area": object.surface_area,
                 "volume": object.volume,
-                "width": object.bb_x_l,
-                "length": object.bb_y_l,
-                "height": object.bb_z_l,
+                "width": object.bb_y_l,
+                "length": object.bb_z_l,
+                "height": object.bb_x_l,
                 "is_water_tight": object.is_water_tight
             }
         })   
