@@ -45,11 +45,19 @@ def get_machinery():
     printers = Machinery.query.all()
     results = []
 
+    if not object.volume or not object.bb_x_l or not object.bb_y_l or not object.bb_z_l:
+        return jsonify({
+            "success": False,
+            "reason": "Объем не расчитан"
+        })
+
     for p in printers:
         material = Materials.query.filter(db.and_(Materials.material == p.material, Materials.color == p.color)).first()
         color = Colors.query.filter(db.and_(Colors.color == p.color)).first()
-        price = object.volume * material.price_per_cubic_cm
-        
+        if object.volume:
+            price = object.volume * material.price_per_cubic_cm
+        else:
+            price = 0     
         results.append({
             "machine": p.machine,
             "dim_x": p.dimension_x,

@@ -4,12 +4,13 @@
       <div class="header">Создать заказ</div>
       <div>
         <div class="order-form">
-          <span style="color: black">Проект {{object}} Версия {{version}}</span>
+          <span style="color: black" class="badge bg-danger">Проект {{object}} Версия {{version}}</span>
           <div class="printers">
             <div class="printer" v-for="_ in machinery" v-bind:key="_.machine + _.material + _.color" @click="order(_.macine, _.material, _.color)">
                 <span class="badge bg-success">Принтер {{_.machine}}, Материал {{_.material}}, Цвет {{_.color_desc}}</span>
                 <span class="badge bg-success" v-if="!_.overfit">Размерность нормальная</span>
                 <span class="badge bg-danger" v-if="_.overfit">Объект превышает размерность</span><br/>
+                <span>Цена: {{Math.round(_.price)}} сум</span><br/>
                 <button @click="order(_.machine, _.material, _.color)" class="btn btn-dark btn-lg btn-block order">Заказать</button>
             </div>
           </div>
@@ -114,7 +115,7 @@ export default {
   width: 600px;
   height: 600px;
   top: 30%;
-  left: 50%;
+  left: calc(50% - 150px);
   margin-top: -100px;
   margin-left: -200px;
   z-index: 1000093;
@@ -129,12 +130,6 @@ export default {
 .printer {
   cursor: pointer;
   background-color: rgb(152, 152, 152);
-  margin: 10px;
-}
-
-.printer:hover {
-  cursor: pointer;
-  background-color: rgb(73, 73, 73);
   margin: 10px;
 }
 

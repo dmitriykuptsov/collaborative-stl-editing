@@ -184,6 +184,7 @@ export default {
       this.showOrderForm = false;
     },
     order() {
+      if (!this.selectedVersion || !this.selectedProject) return;
       this.showOrderForm = true;
     },
     onSTLLoaded() {

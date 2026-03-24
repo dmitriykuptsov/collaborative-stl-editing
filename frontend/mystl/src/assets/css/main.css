@@ -183,6 +183,7 @@ button {
 .order {
   background-color: #505050;
   border-color: #d2d2d2;
+  width: 100%;
 }
 
 .order:hover {
