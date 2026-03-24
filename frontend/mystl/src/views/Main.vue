@@ -1,5 +1,6 @@
 <template>
   <div v-if="isAuthenticated">
+    <SimpleSpinner v-if="showSpinner" />
     <CreateObject v-if="showCreateObject" v-on:close="closeCreateObject" />
     <div class="menu">
       <div class="menu-item" @click="createObject">
@@ -51,6 +52,7 @@
         <StlViewer
           v-bind:object="selectedProject"
           v-bind:version="selectedVersion"
+          v-on:loaded="onSTLLoaded"
         />
       </div>
       <div class="col3">
@@ -135,6 +137,7 @@ import axios from "axios";
 import CreateObject from "../components/CreateObject.vue";
 import SimplePaginator from "../components/SimplePaginator.vue";
 import StlViewer from "../components/StlViewer.vue";
+import SimpleSpinner from "../components/SimpleSpinner.vue";
 
 axios.defaults.withCredentials = true;
 
@@ -142,6 +145,7 @@ export default {
   name: "App",
   data() {
     return {
+      showSpinner: false,
       showCreateObject: false,
       isAuthenticated: true,
       loaded: false,
@@ -168,6 +172,9 @@ export default {
     };
   },
   methods: {
+    onSTLLoaded() {
+      this.showSpinner = false;
+    },
     changeVersion(object, version) {
       this.selectedProject = object;
       this.selectedVersion = version;
@@ -283,6 +290,7 @@ export default {
         });
     },
     getVersions() {
+      this.showSpinner = true;
       const headers = {
         "Content-Type": "application/json",
       };
@@ -389,6 +397,7 @@ export default {
     CreateObject,
     SimplePaginator,
     StlViewer,
+    SimpleSpinner,
   },
 };
 </script>

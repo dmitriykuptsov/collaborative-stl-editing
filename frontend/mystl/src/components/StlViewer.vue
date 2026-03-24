@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" style="width: 100%; height: 80vh"></div>
+  <div ref="container" style="width: 100%; height: 86vh"></div>
 </template>
 
 <script>
@@ -32,6 +32,7 @@ export default {
   methods: {
     loadModel() {
       if (!this.$refs.container) {
+        this.$emit("loaded", {});
         return;
       }
       const scene = new THREE.Scene();
@@ -67,6 +68,7 @@ export default {
         
       };
       if (!this.object || !this.version) {
+        this.$emit("loaded", {});
         return;
       }
       const url =
@@ -96,6 +98,7 @@ export default {
             var geometry = loader.parse(arrayBuffer);
             geometry.center()
           } catch (e) {
+            this.$emit("loaded", {});
             return;
           }
 
@@ -121,6 +124,7 @@ export default {
           }
 
           animate();
+          this.$emit("loaded", {});
         });
     },
   },
