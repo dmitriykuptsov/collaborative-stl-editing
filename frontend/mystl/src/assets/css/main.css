@@ -167,6 +167,28 @@ button {
   background-color: #a5a5a5;
 }
 
+.cancel-order {
+  background-color: #505050;
+  border-color: #d2d2d2;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 97%;
+}
+
+.cancel-order:hover {
+  background-color: #a5a5a5;
+}
+
+.order {
+  background-color: #505050;
+  border-color: #d2d2d2;
+}
+
+.order:hover {
+  background-color: #a5a5a5;
+}
+
 .save,
 .confirm,
 .choose,

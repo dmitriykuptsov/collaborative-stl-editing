@@ -1,6 +1,11 @@
 <template>
   <div v-if="isAuthenticated">
     <SimpleSpinner v-if="showSpinner" />
+    <OrderForm 
+      v-if="showOrderForm" 
+      v-bind:object="selectedProject" 
+      v-bind:version="selectedVersion"
+      v-on:close="clpseOrederForm" />
     <CreateObject v-if="showCreateObject" v-on:close="closeCreateObject" />
     <div class="menu">
       <div class="menu-item" @click="createObject">
@@ -126,6 +131,7 @@
           Дата создания:
           <span class="badge bg-danger">{{ _.date_uploaded }}</span> Хеш:
           {{ _.hash.substring(0, 6) + "..." }}
+          <button class="btn btn-dark btn-lg btn-block upload" @click="order">Заказать печать</button>
         </div>
       </div>
     </div>
@@ -138,6 +144,7 @@ import CreateObject from "../components/CreateObject.vue";
 import SimplePaginator from "../components/SimplePaginator.vue";
 import StlViewer from "../components/StlViewer.vue";
 import SimpleSpinner from "../components/SimpleSpinner.vue";
+import OrderForm from "../components/OrderForm.vue";
 
 axios.defaults.withCredentials = true;
 
@@ -146,6 +153,7 @@ export default {
   data() {
     return {
       showSpinner: false,
+      showOrderForm: false,
       showCreateObject: false,
       isAuthenticated: true,
       loaded: false,
@@ -172,6 +180,12 @@ export default {
     };
   },
   methods: {
+    clpseOrederForm() {
+      this.showOrderForm = false;
+    },
+    order() {
+      this.showOrderForm = true;
+    },
     onSTLLoaded() {
       this.showSpinner = false;
     },
@@ -401,6 +415,7 @@ export default {
     SimplePaginator,
     StlViewer,
     SimpleSpinner,
+    OrderForm,
   },
 };
 </script>

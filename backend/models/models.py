@@ -93,6 +93,8 @@ class Colors(db.Model):
     __tablename__  = "Colors"
     
     color          = db.Column(db.String(100), nullable=False, primary_key=True)
+    code           = db.Column(db.String(20), nullable=False)
+    description    = db.Column(db.String(100), nullable=False)
 
 class Materials(db.Model):
     __tablename__  = "Materials"
