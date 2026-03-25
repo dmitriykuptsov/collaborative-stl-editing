@@ -50,6 +50,33 @@ def create_object_description():
         "success": True
     })
 
+@mod_upload.route("/remove_object/", methods=["POST"])
+def remove_object():
+    if not is_valid_session(request, config_):
+        return jsonify({
+            "success": False,
+            "auth_fail": True
+        })
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({
+            "success": False
+        })
+    username = get_subject(request, config_)
+    object = Objects.query.filter(db.and_(Objects.object == data.get("name"), Objects.owner == username)).first()
+    if not object:
+        return jsonify({
+            "success": False,
+            "reason": "Объект не существует"
+        })
+
+    db.session.delete(object)
+    db.session.commit()
+    
+    return jsonify({
+        "success": True
+    })
+
 @mod_upload.route("/get_objects/", methods=["POST"])
 def get_objects():
     if not is_valid_session(request, config_):

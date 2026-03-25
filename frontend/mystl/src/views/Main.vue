@@ -6,6 +6,12 @@
       v-bind:object="selectedProject" 
       v-bind:version="selectedVersion"
       v-on:close="closeOrederForm" />
+    <ConfirmModal 
+      v-if="showConfirmModal" 
+      v-on:confirm="remove" 
+      v-on:cancel="hideConfirm" 
+      v-bind:header="header" 
+      v-bind:message="message" />
     <OrdersForm 
       v-if="showOrdersForm" 
       v-on:close="closeOredersForm" />
@@ -20,7 +26,7 @@
         Настройки
       </div>
       <div class="menu-item" @click="getOrders">
-        <i class="bi bi-gem fs-4"></i>
+        <i class="bi bi-cart fs-4"></i>
         Заказы
       </div>
       <div class="menu-item" @click="logout">
@@ -50,6 +56,9 @@
           <div style="font-weight: bolder">Проект: {{ _.name }}</div>
           Дата создания:
           <span class="badge bg-danger">{{ _.creation_date }}</span>
+          <button @click="confirm(_.name)" class="btn btn-dark btn-lg btn-block remove">
+            <i class="bi bi-trash fs-6"></i> Удалить
+          </button>
         </div>
       </div>
       <div class="col2">
@@ -151,6 +160,7 @@ import StlViewer from "../components/StlViewer.vue";
 import SimpleSpinner from "../components/SimpleSpinner.vue";
 import OrderForm from "../components/OrderForm.vue";
 import OrdersForm from "../components/OrdersForm.vue";
+import ConfirmModal from "../components/ConfirmModal.vue";
 
 axios.defaults.withCredentials = true;
 
@@ -158,6 +168,9 @@ export default {
   name: "App",
   data() {
     return {
+      header: "",
+      message: "",
+      showConfirmModal: false,
       showSpinner: false,
       showOrderForm: false,
       showOrdersForm: false,
@@ -166,6 +179,7 @@ export default {
       loaded: false,
       menuItemsActive: {},
       objects: [],
+      objectToRemove: "",
       selectedProject: "",
       selectedVersion: "",
       versions: [],
@@ -187,6 +201,40 @@ export default {
     };
   },
   methods: {
+    confirm(object) {
+      this.objectToRemove = object;
+      this.header = "Удаление"
+      this.message = "Удалить проект " + object + "?"
+      this.showConfirmModal = true;
+    },
+    hideConfirm() {
+      this.showConfirmModal = false;
+    },
+    remove() {
+      this.showConfirmModal = false;
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const url = this.$BASE_URL + "/upload/remove_object/";
+      axios
+        .post(
+          url,
+          {
+            name: this.objectToRemove
+          },
+          { headers },
+        )
+        .then((response) => {
+          this.loaded = true;
+          if (!response.data.auth_fail) {
+            this.isAuthenticated = true;
+            this.getObjectsCount()
+          } else {
+            this.isAuthenticated = false;
+            this.$router.push("/login/");
+          }
+        });
+    },
     closeOredersForm() {
       this.showOrdersForm = false;
     },
@@ -278,6 +326,18 @@ export default {
           if (!response.data.auth_fail) {
             this.isAuthenticated = true;
             this.info = response.data.result;
+            if (!this.info) {
+              this.info = {
+                object: "",
+                version: "",
+                surface_area: 0,
+                volume: 0,
+                width: 0,
+                length: 0,
+                height: 0,
+                is_water_tight: false,
+              }
+            }
           } else {
             this.isAuthenticated = false;
             this.$router.push("/login/");
@@ -372,6 +432,8 @@ export default {
           if (!response.data.auth_fail) {
             this.isAuthenticated = true;
             this.objects = response.data.result;
+            this.selectedProject = ""
+            this.selectedVersion = ""
           } else {
             this.isAuthenticated = false;
             this.$router.push("/login/");
@@ -436,7 +498,8 @@ export default {
     StlViewer,
     SimpleSpinner,
     OrderForm,
-    OrdersForm
+    OrdersForm,
+    ConfirmModal
   },
 };
 </script>
