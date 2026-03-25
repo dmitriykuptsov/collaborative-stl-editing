@@ -37,8 +37,7 @@ CREATE TABLE IF NOT EXISTS Users (
     salt VARCHAR(100) NOT NULL,
     confirmed BOOLEAN DEFAULT FALSE,
     enable_two_factor_auth BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (country_code, city_code) REFERENCES Cities(country_code, city_code) ON DELETE CASCADE,
-    FOREIGN KEY (country_code) REFERENCES Countries(country_code) ON DELETE CASCADE
+    FOREIGN KEY (country_code, city_code) REFERENCES Cities(country_code, city_code) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS TwoFactorAuthentication (
