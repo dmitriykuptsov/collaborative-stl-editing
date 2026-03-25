@@ -5,7 +5,10 @@
       v-if="showOrderForm" 
       v-bind:object="selectedProject" 
       v-bind:version="selectedVersion"
-      v-on:close="clpseOrederForm" />
+      v-on:close="closeOrederForm" />
+    <OrdersForm 
+      v-if="showOrdersForm" 
+      v-on:close="closeOredersForm" />
     <CreateObject v-if="showCreateObject" v-on:close="closeCreateObject" />
     <div class="menu">
       <div class="menu-item" @click="createObject">
@@ -16,7 +19,7 @@
         <i class="bi bi-file fs-4"></i>
         Настройки
       </div>
-      <div class="menu-item">
+      <div class="menu-item" @click="getOrders">
         <i class="bi bi-gem fs-4"></i>
         Заказы
       </div>
@@ -147,6 +150,7 @@ import SimplePaginator from "../components/SimplePaginator.vue";
 import StlViewer from "../components/StlViewer.vue";
 import SimpleSpinner from "../components/SimpleSpinner.vue";
 import OrderForm from "../components/OrderForm.vue";
+import OrdersForm from "../components/OrdersForm.vue";
 
 axios.defaults.withCredentials = true;
 
@@ -156,6 +160,7 @@ export default {
     return {
       showSpinner: false,
       showOrderForm: false,
+      showOrdersForm: false,
       showCreateObject: false,
       isAuthenticated: true,
       loaded: false,
@@ -182,7 +187,13 @@ export default {
     };
   },
   methods: {
-    clpseOrederForm() {
+    closeOredersForm() {
+      this.showOrdersForm = false;
+    },
+    getOrders() {
+      this.showOrdersForm = true;
+    },
+    closeOrederForm() {
       this.showOrderForm = false;
     },
     order() {
@@ -424,6 +435,7 @@ export default {
     StlViewer,
     SimpleSpinner,
     OrderForm,
+    OrdersForm
   },
 };
 </script>
