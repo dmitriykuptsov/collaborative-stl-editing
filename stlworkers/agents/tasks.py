@@ -67,4 +67,5 @@ def process_stl(self, file_path, object, version, owner):
         session.commit();
     
     except Exception as e:
+        session.rollback()
         raise self.retry(exc=e, countdown=10)
