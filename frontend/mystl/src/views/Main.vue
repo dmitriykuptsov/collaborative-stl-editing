@@ -63,7 +63,7 @@
       </div>
       <div class="col2">
         <div class="col-header">
-          3D вьювер <span v-if="selectedProject"><b style="margin-left: 10px">Прокет</b>:
+          3D вьювер <span v-if="selectedProject"><b style="margin-left: 10px">Проект</b>:
           <span class="badge bg-danger">{{ selectedProject }}</span>
           <b style="margin-left: 10px">Версия</b>:
           <span class="badge bg-danger">{{ selectedVersion }}</span>
