@@ -144,3 +144,39 @@ def place_order():
     return jsonify({
             "success": True
         })
+
+@mod_orders.route("/get_active_orders/", methods=["POST"])
+def get_active_orders():
+
+    if not is_valid_session(request, config_):
+        return jsonify({
+            "success": False,
+            "auth_fail": True
+        })
+    
+    username = get_subject(request, config_)
+    
+    orders = Orders.query.filter(db.and_(Orders.owner == username, Orders.status != "Доставлен")).all()
+
+    result = []
+
+    for o in orders:
+        result.append({
+            "order_number": o.order_number,
+            "color": o.color,
+            "machine": o.machine,
+            "material": o.material,
+            "price": o.cost,
+            "owner": o.owner,
+            "paid": o.paid,
+            "status": o.status,
+            "version": o.version,
+            "object": o.object,
+            "order_date": o.order_date
+        })
+
+    return jsonify({
+            "success": True,
+            "result": result
+        })
+    
