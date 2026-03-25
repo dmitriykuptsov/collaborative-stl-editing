@@ -208,6 +208,7 @@ export default {
     },
     changeProject(object) {
       this.selectedProject = object;
+      this.selectedVersion = 1;
       this.getVersionsCount();
       this.getVersions();
     },
