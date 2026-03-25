@@ -287,6 +287,7 @@ export default {
         this.loaded = true;
         if (!response.data.auth_fail) {
           this.isAuthenticated = true;
+          this.getVersions();
         } else {
           this.isAuthenticated = false;
           this.$router.push("/login/");
