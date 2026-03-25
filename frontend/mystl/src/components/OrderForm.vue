@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="form-group" v-if="failed" style="margin-top: 10px">
-          <div class="alert alert-success" role="alert">
+          <div class="alert alert-danger" role="alert">
             {{error}}
           </div>
         </div>
@@ -74,7 +74,6 @@ export default {
         });
     },
     order(machine, material, color) {
-        alert(machine)
       const headers = {
         "Content-Type": "application/json",
       };
