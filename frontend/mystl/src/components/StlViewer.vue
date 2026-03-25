@@ -64,8 +64,25 @@ export default {
       const grid = new THREE.GridHelper(200, 10);
       scene.add(grid);
 
-      const axes = new THREE.AxesHelper(100);
+      const axes = new THREE.AxesHelper(4);
+      axes.scale.set(25, 25, 25);
       scene.add(axes);
+
+      const origin = new THREE.Vector3(0, 0, 0);
+
+      // X axis (red)
+      const xDir = new THREE.Vector3(100, 0, 0);
+      const xArrow = new THREE.ArrowHelper(xDir, origin, 100, 0xff0000);
+
+      // Y axis (green)
+      const yDir = new THREE.Vector3(0, 100, 0);
+      const yArrow = new THREE.ArrowHelper(yDir, origin, 100, 0x00ff00);
+
+      // Z axis (blue)
+      const zDir = new THREE.Vector3(0, 0, 100);
+      const zArrow = new THREE.ArrowHelper(zDir, origin, 100, 0x0000ff);
+
+      scene.add(xArrow, yArrow, zArrow);
 
       // Loader
       const loader = new STLLoader();
