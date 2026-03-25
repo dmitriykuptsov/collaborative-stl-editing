@@ -225,6 +225,7 @@ export default {
       }
       this.selectedProject = object;
       this.selectedVersion = 1;
+      this.getStlInfo();
       this.getVersionsCount();
       this.getVersions();
     },
