@@ -61,6 +61,12 @@ export default {
       scene.background = new THREE.Color(0xffffff)
       scene.add(light);
 
+      const grid = new THREE.GridHelper(200, 10);
+      scene.add(grid);
+
+      const axes = new THREE.AxesHelper(100);
+      scene.add(axes);
+
       // Loader
       const loader = new STLLoader();
 
