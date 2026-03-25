@@ -283,8 +283,10 @@ export default {
       formData.append("model", this.file);
       formData.append("name", this.selectedProject);
       const url = this.$BASE_URL + "/upload/upload_file/";
+      this.showSpinner = true;
       axios.post(url, formData).then((response) => {
         this.loaded = true;
+        this.showSpinner = false;
         if (!response.data.auth_fail) {
           this.isAuthenticated = true;
           this.getVersions();
