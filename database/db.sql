@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS OrderStatus (
 INSERT INTO OrderStatus VALUES('В ожидании');
 INSERT INTO OrderStatus VALUES('В печати');
 INSERT INTO OrderStatus VALUES('Готов');
+INSERT INTO OrderStatus VALUES('Доставлен');
 
 CREATE TABLE IF NOT EXISTS Orders (
     order_number VARCHAR(100) NOT NULL PRIMARY KEY,
