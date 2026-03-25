@@ -85,11 +85,11 @@
             </tr>
             <tr>
               <td>Oбъем</td>
-              <td>{{ info.volume }}</td>
+              <td>{{ Math.round(info.volume*100)/100 }}</td>
             </tr>
             <tr>
               <td>Площадь</td>
-              <td>{{ info.surface_area }}</td>
+              <td>{{ Math.round(info.surface_area*100)/100 }}</td>
             </tr>
             <tr>
               <td>Герметичный</td>
@@ -97,15 +97,15 @@
             </tr>
             <tr>
               <td>Ширина</td>
-              <td>{{ info.width }}</td>
+              <td>{{ Math.round(info.width*100)/100 }}</td>
             </tr>
             <tr>
               <td>Высота</td>
-              <td>{{ info.height }}</td>
+              <td>{{ Math.round(info.height*100)/100 }}</td>
             </tr>
             <tr>
               <td>Длина</td>
-              <td>{{ info.length }}</td>
+              <td>{{ Math.round(info.length*100)/100 }}</td>
             </tr>
           </tbody>
         </table>
