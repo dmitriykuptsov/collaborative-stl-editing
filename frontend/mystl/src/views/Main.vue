@@ -39,7 +39,7 @@
         <div class="col-header">Проекты</div>
         <SimplePaginator
           v-bind:count="totalObjects"
-          v-bind:ipp="ipp"
+          v-bind:ipp="ippObjects"
           v-bind:currentPage="currentObjectPage"
           v-on:page-click="changeObjectPage"
           v-bind:autoMargin="true"
@@ -125,7 +125,7 @@
         </table>
         <SimplePaginator
           v-bind:count="totalVersions"
-          v-bind:ipp="ipp"
+          v-bind:ipp="ippVersions"
           v-bind:currentPage="currentVersionPage"
           v-on:page-click="changeVersionPage"
           v-bind:autoMargin="true"
@@ -187,7 +187,8 @@ export default {
       totalObjects: 0,
       currentVersionPage: 1,
       currentObjectPage: 1,
-      ipp: 4,
+      ippObjects: 7,
+      ippVersions: 3,
       info: {
         object: "",
         version: "",
@@ -400,7 +401,7 @@ export default {
           {
             name: this.selectedProject,
             limit: 4,
-            offset: this.ipp * (this.currentVersionPage - 1),
+            offset: this.ippVersions * (this.currentVersionPage - 1),
           },
           { headers },
         )
@@ -426,7 +427,7 @@ export default {
           url,
           {
             limit: 4,
-            offset: this.ipp * (this.currentObjectPage - 1),
+            offset: this.ippObjects * (this.currentObjectPage - 1),
           },
           { headers },
         )
