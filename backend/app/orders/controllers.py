@@ -78,14 +78,15 @@ def get_machinery():
         "result": results
     })
 
-"""
-@mod_orders.route("/get_machinery/", methods=["POST"])
-def get_machinery():
+
+@mod_orders.route("/place_order/", methods=["POST"])
+def place_order():
     if not is_valid_session(request, config_):
         return jsonify({
             "success": False,
             "auth_fail": True
         })
+    
     username = get_subject(request, config_)
 
     data = request.get_json(force=True)
@@ -98,11 +99,48 @@ def get_machinery():
                                                  ObjectVersions.owner == username)).first()
     if not object:
         return jsonify({
-            "success": True,
+            "success": False,
             "reason": "Объект не найден"
         })
     
-    order_number = hexlify(os.urandom(32)).decode("UTF-8")
+    if not object.volume or not object.bb_x_l or not object.bb_y_l or not object.bb_z_l:
+        return jsonify({
+            "success": False,
+            "reason": "Объем не расчитан"
+        })
+    material = Materials.query.filter(db.and_(Materials.material == data.get("material"), Materials.color == data.get("color"))).first()
+    printer = Machinery.query.filter(db.and_(Machinery.machine == data.get("machine"), Machinery.color == data.get("color"), Machinery.material == data.get("material"))).first()
+
+    if (printer.dimension_x < object.bb_x_l or printer.dimension_y < object.bb_y_l or printer.dimension_z < object.bb_z_l):
+        return jsonify({
+            "success": False,
+            "reason": "Некорректная размерность"
+        })
+    
+    price = object.volume * material.price_per_cubic_cm
+
+    while True:
+        order_number = hexlify(os.urandom(32)).decode("UTF-8");
+        o = Orders.query.filter(db.and_(Orders.order_number == order_number)).first()
+        if not o:
+            break;
+    
     order = Orders();
-    Orders.color = data.get("color")
-"""
+    order.order_number = order_number
+    order.color = data.get("color")
+    order.machine = data.get("machine")
+    order.material = data.get("material")
+    order.cost = price
+    order.owner = object.owner
+    order.paid = False
+    order.status = "В ожидании"
+    order.version = data.get("version")
+    order.object = data.get("name")
+    order.order_date = datetime.now(tz=timezone.utc)
+
+    db.session.add(order)
+    db.session.commit()
+
+    return jsonify({
+            "success": True
+        })

@@ -6,7 +6,7 @@
         <div class="order-form">
           <span style="color: black" class="badge bg-danger">Проект {{object}} Версия {{version}}</span>
           <div class="printers">
-            <div class="printer" v-for="_ in machinery" v-bind:key="_.machine + _.material + _.color" @click="order(_.macine, _.material, _.color)">
+            <div class="printer" v-for="_ in machinery" v-bind:key="_.machine + _.material + _.color">
                 <span class="badge bg-success">Принтер {{_.machine}}, Материал {{_.material}}, Цвет {{_.color_desc}}</span>
                 <span class="badge bg-success" v-if="!_.overfit">Размерность нормальная</span>
                 <span class="badge bg-danger" v-if="_.overfit">Объект превышает размерность</span><br/>
@@ -16,6 +16,16 @@
           </div>
         </div>
       </div>
+      <div class="form-group" v-if="ordered" style="margin-top: 10px">
+          <div class="alert alert-success" role="alert">
+            Заказ создан
+          </div>
+        </div>
+        <div class="form-group" v-if="failed" style="margin-top: 10px">
+          <div class="alert alert-success" role="alert">
+            {{error}}
+          </div>
+        </div>
       <button @click="cancel" class="btn btn-dark btn-lg btn-block cancel-order">
         Отменить
       </button>
@@ -35,6 +45,7 @@ export default {
       machinery: [],
       failed: false,
       error: "",
+      ordered: false
     };
   },
   methods: {
@@ -62,24 +73,32 @@ export default {
           }
         });
     },
-    create(cb) {
+    order(machine, material, color) {
+        alert(machine)
       const headers = {
         "Content-Type": "application/json",
       };
-      const url = this.$BASE_URL + "/upload/create_object_description/";
+      const url = this.$BASE_URL + "/orders/place_order/";
       axios
         .post(
           url,
           {
-            name: this.name,
-            description: this.description,
+            name: this.object,
+            version: this.version,
+            machine: machine,
+            material: material,
+            color: color
           },
           { headers },
         )
         .then((response) => {
           this.loaded = true;
           if (response.data.success) {
-            cb();
+            this.ordered = true;
+            setTimeout(() => {
+                this.ordered = false;
+                this.$emit("close", {});
+            }, 5000);
           } else {
             this.failed = true;
             this.error = response.data.reason;

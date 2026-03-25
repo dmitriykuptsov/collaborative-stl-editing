@@ -51,8 +51,11 @@
       </div>
       <div class="col2">
         <div class="col-header">
-          3D вьювер <b style="margin-left: 10px">Версия</b>:
+          3D вьювер <span v-if="selectedProject"><b style="margin-left: 10px">Прокет</b>:
+          <span class="badge bg-danger">{{ selectedProject }}</span>
+          <b style="margin-left: 10px">Версия</b>:
           <span class="badge bg-danger">{{ selectedVersion }}</span>
+          </span>
         </div>
         <StlViewer
           v-bind:object="selectedProject"
@@ -62,8 +65,7 @@
       </div>
       <div class="col3">
         <div class="col-header">
-          Версии и свойства <b style="margin-left: 10px">Прокет</b>:
-          <span class="badge bg-danger">{{ selectedProject }}</span>
+          Версии и свойства 
         </div>
         <div>
           <input type="file" @change="handleFile" ref="fileInput" hidden />
@@ -207,6 +209,9 @@ export default {
       this.getVersions();
     },
     changeProject(object) {
+      if (this.selectedProject != object) {
+        this.showSpinner = true;
+      }
       this.selectedProject = object;
       this.selectedVersion = 1;
       this.getVersionsCount();
@@ -309,7 +314,7 @@ export default {
         });
     },
     getVersions() {
-      this.showSpinner = true;
+      //this.showSpinner = true;
       const headers = {
         "Content-Type": "application/json",
       };
@@ -329,6 +334,7 @@ export default {
           if (!response.data.auth_fail) {
             this.isAuthenticated = true;
             this.versions = response.data.result;
+            //this.changeVersion(this.selectedProject, 1);
           } else {
             this.isAuthenticated = false;
             this.$router.push("/login/");
