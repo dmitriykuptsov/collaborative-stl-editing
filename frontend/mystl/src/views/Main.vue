@@ -559,7 +559,7 @@ export default {
 }
 
 .container {
-  max-width: 2000px;
+  max-width: 4000px;
   margin-top: 20px;
   width: 100%;
   display: flex;
