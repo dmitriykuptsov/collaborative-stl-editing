@@ -400,7 +400,7 @@ export default {
           url,
           {
             name: this.selectedProject,
-            limit: 4,
+            limit: 3,
             offset: this.ippVersions * (this.currentVersionPage - 1),
           },
           { headers },
@@ -426,7 +426,7 @@ export default {
         .post(
           url,
           {
-            limit: 4,
+            limit: 7,
             offset: this.ippObjects * (this.currentObjectPage - 1),
           },
           { headers },
